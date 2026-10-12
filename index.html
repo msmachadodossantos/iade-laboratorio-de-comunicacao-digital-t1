@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Preço da Música ao Vivo | Desafio RFM 2026</title>
+    
+    <!-- Google Fonts: Outfit & Plus Jakarta Sans para um look jovem e moderno -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap v5.3 CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons via CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0b0719;
+            --bg-card-dark: #161129;
+            --purple-vibrant: #6f2cf3;
+            --pink-electric: #ff1e7a;
+            --blue-deep: #1b1442;
+            --text-light: #f8f9fa;
+            --text-muted-custom: #b5b0c9;
+            --gradient-festival: linear-gradient(135deg, #6f2cf3 0%, #ff1e7a 100%);
+            --gradient-hero: radial-gradient(circle at 80% 20%, rgba(255, 30, 122, 0.25) 0%, rgba(111, 44, 243, 0.25) 45%, rgba(11, 7, 25, 0.98) 100%);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, .navbar-brand {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background-color: rgba(11, 7, 25, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-pill {
+            background: var(--gradient-festival);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: var(--gradient-hero), url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            padding: 7rem 0 5rem 0;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 30, 122, 0.2);
+        }
+
+        .badge-festival {
+            background: rgba(255, 30, 122, 0.15);
+            color: #ff6ea7;
+            border: 1px solid var(--pink-electric);
+            padding: 0.55rem 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+        }
+
+        .text-gradient {
+            background: var(--gradient-festival);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Buttons */
+        .btn-festival-primary {
+            background: var(--gradient-festival);
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            padding: 0.85rem 1.8rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 30, 122, 0.35);
+        }
+
+        .btn-festival-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 30, 122, 0.55);
+            color: #fff;
+        }
+
+        .btn-festival-outline {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            font-weight: 600;
+            padding: 0.85rem 1.8rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-festival-outline:hover {
+            border-color: var(--pink-electric);
+            background: rgba(255, 30, 122, 0.1);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        /* Cards & Sections */
+        .section-padding {
+            padding: 5rem 0;
+        }
+
+        .custom-card {
+            background-color: var(--bg-card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+
+        .custom-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--purple-vibrant);
+            box-shadow: 0 15px 35px rgba(111, 44, 243, 0.2);
+        }
+
+        .icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--gradient-festival);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Tabela Comparativa */
+        .table-container {
+            background-color: var(--bg-card-dark);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .table-festival {
+            --bs-table-bg: transparent;
+            --bs-table-color: var(--text-light);
+            --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+            --bs-table-striped-color: var(--text-light);
+            --bs-table-hover-bg: rgba(111, 44, 243, 0.15);
+            --bs-table-hover-color: #fff;
+            border-color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 0;
+        }
+
+        .table-festival thead th {
+            background-color: var(--blue-deep);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            padding: 1.1rem 1rem;
+            border-bottom: 2px solid var(--pink-electric);
+        }
+
+        .table-festival tbody td {
+            padding: 1.1rem 1rem;
+        }
+
+        .total-badge {
+            background: rgba(255, 30, 122, 0.18);
+            color: #ff85b6;
+            border: 1px solid rgba(255, 30, 122, 0.4);
+            padding: 0.4rem 0.85rem;
+            border-radius: 50px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* Secção Fatura Oculta */
+        .hidden-bill-card {
+            background: linear-gradient(180deg, rgba(27, 20, 66, 0.9) 0%, rgba(22, 17, 41, 0.95) 100%);
+            border-left: 4px solid var(--pink-electric);
+        }
+
+        /* Calculadora */
+        .calculator-card {
+            background: linear-gradient(145deg, #1b1442 0%, #120d2b 100%);
+            border: 1px solid rgba(111, 44, 243, 0.4);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-select-custom, .form-check-input-custom {
+            background-color: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+        }
+
+        .form-select-custom:focus {
+            background-color: #161129;
+            border-color: var(--pink-electric);
+            color: #fff;
+            box-shadow: 0 0 0 0.25rem rgba(255, 30, 122, 0.25);
+        }
+
+        .form-select-custom option {
+            background-color: #161129;
+            color: #fff;
+        }
+
+        .food-option-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .food-option-card.active {
+            border-color: var(--pink-electric);
+            background: rgba(255, 30, 122, 0.12);
+        }
+
+        .result-box {
+            background: rgba(11, 7, 25, 0.65);
+            border: 2px dashed rgba(255, 30, 122, 0.5);
+            border-radius: 18px;
+            padding: 1.75rem;
+        }
+
+        .total-price-display {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+
+        /* Accordion */
+        .accordion-custom .accordion-item {
+            background-color: var(--bg-card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px !important;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .accordion-custom .accordion-button {
+            background-color: var(--bg-card-dark);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 1.25rem 1.5rem;
+            box-shadow: none;
+        }
+
+        .accordion-custom .accordion-button:not(.collapsed) {
+            background: rgba(111, 44, 243, 0.2);
+            color: #ff6ea7;
+        }
+
+        .accordion-custom .accordion-button::after {
+            filter: invert(1) brightness(200%);
+        }
+
+        .accordion-custom .accordion-body {
+            color: var(--text-muted-custom);
+            padding: 1.25rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #06040e;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .social-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            background: var(--gradient-festival);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de Navegação Fixa -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#">
+                <i class="bi bi-soundwave text-danger fs-4"></i>
+                <span>RFM <span class="brand-pill ms-1">FESTIVAL LAB</span></span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-lg-3 align-items-lg-center mt-3 mt-lg-0">
+                    <li class="nav-item"><a class="nav-link text-light" href="#enquadramento">O Contexto</a></li>
+                    <li class="nav-item"><a class="nav-link text-light" href="#comparativo">Comparativo 2026</a></li>
+                    <li class="nav-item"><a class="nav-link text-light" href="#fatura-oculta">Fatura Oculta</a></li>
+                    <li class="nav-item"><a class="nav-link text-light" href="#dicas">Dicas de Poupança</a></li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-sm btn-festival-primary px-3 py-2" href="#calculadora">
+                            <i class="bi bi-calculator me-1"></i> Simular Gastos
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- A. Header / Hero Section -->
+    <header class="hero-section d-flex align-items-center">
+        <div class="container py-4">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-10 col-xl-9">
+                    <span class="badge rounded-pill badge-festival mb-3">
+                        <i class="bi bi-stars me-1"></i> Guia Prático & Reportagem Especial 2026
+                    </span>
+                    <h1 class="hero-title mb-4">
+                        O Preço da Música ao Vivo: Quanto Custa Realmente Ir ao <span class="text-gradient">Primeiro Festival em Lisboa?</span>
+                    </h1>
+                    <p class="lead text-secondary-emphasis mb-5 px-md-5" style="color: var(--text-muted-custom) !important; font-size: 1.2rem;">
+                        Do bilhete ao regresso de madrugada: revelamos a fatura oculta do Rock in Rio, NOS Alive, Super Bock Super Rock e MEO Kalorama.
+                    </p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                        <a href="#calculadora" class="btn btn-festival-primary">
+                            <i class="bi bi-Sliders me-2"></i>Simular o Meu Orçamento
+                        </a>
+                        <a href="#comparativo" class="btn btn-festival-outline">
+                            <i class="bi bi-table me-2"></i>Ver Comparativo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- B. Enquadramento Editorial (Resumo em Cards) -->
+    <section id="enquadramento" class="section-padding">
+        <div class="container">
+            <div class="row mb-5 text-center">
+                <div class="col-lg-7 mx-auto">
+                    <h2 class="fw-bold mb-2">Mais do que um Bilhete na Mão</h2>
+                    <p style="color: var(--text-muted-custom);">Porque é que a conta bancária no dia seguinte ao concerto nunca bate certo com o valor que pagaste pelo bilhete?</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <!-- Card 1 -->
+                <div class="col-md-4">
+                    <div class="custom-card p-4">
+                        <div class="icon-box">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">A Tensão</h3>
+                        <p class="mb-0" style="color: var(--text-muted-custom);">
+                            A inflação nos festivais e o impacto direto no orçamento mensal dos estudantes e jovens adultos (18–24 anos), que enfrentam bilhetes até 30% mais caros na última década.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="col-md-4">
+                    <div class="custom-card p-4">
+                        <div class="icon-box">
+                            <i class="bi bi-search-heart"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">O Ângulo</h3>
+                        <p class="mb-0" style="color: var(--text-muted-custom);">
+                            Ir além do preço oficial de cartaz: desconstruímos o custo real de um dia inteiro de música com alimentação no recinto, transportes noturnos e copos reutilizáveis.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="col-md-4">
+                    <div class="custom-card p-4">
+                        <div class="icon-box">
+                            <i class="bi bi-piggy-bank"></i>
+                        </div>
+                        <h3 class="h4 fw-bold mb-3">O Objetivo</h3>
+                        <p class="mb-0" style="color: var(--text-muted-custom);">
+                            Promover a transparência financeira e partilhar dicas práticas de poupança para que possas cantar na primeira fila sem comprometer o resto do teu verão.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- C. Tabela Comparativa de Festivais em Lisboa (2026) -->
+    <section id="comparativo" class="section-padding" style="background-color: rgba(27, 20, 66, 0.35);">
+        <div class="container">
+            <div class="row mb-4 align-items-end">
+                <div class="col-lg-8">
+                    <span class="text-uppercase fw-bold small" style="color: var(--pink-electric); letter-spacing: 1px;">Raio-X Financeiro</span>
+                    <h2 class="fw-bold mt-1 mb-2">Comparativo de Festivais em Lisboa (2026)</h2>
+                    <p class="mb-0" style="color: var(--text-muted-custom);">Valores médios estimados para 1 dia de festival (incluindo deslocação na Grande Lisboa e duas refeições/bebidas).</p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <span class="badge bg-dark border border-secondary text-light p-2">
+                        <i class="bi bi-info-circle me-1 text-info"></i> Dados atualizados para a época 2026
+                    </span>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle table-festival">
+                        <thead>
+                            <tr>
+                                <th scope="col">Festival & Local</th>
+                                <th scope="col" class="text-center">Bilhete Diário</th>
+                                <th scope="col" class="text-center">Passe Geral</th>
+                                <th scope="col" class="text-center">Alimentação / Dia</th>
+                                <th scope="col" class="text-center">Transporte</th>
+                                <th scope="col" class="text-end">Custo Total Estimado (1 Dia)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="fw-bold fs-6">Rock in Rio Lisboa 2026</div>
+                                    <small style="color: var(--text-muted-custom);"><i class="bi bi-geo-alt-fill text-danger me-1"></i>Parque Tejo</small>
+                                </td>
+                                <td class="text-center fw-semibold">84 €</td>
+                                <td class="text-center">147 € <small class="d-block" style="color: var(--text-muted-custom);">(Fim de semana)</small></td>
+                                <td class="text-center">25€ – 35€</td>
+                                <td class="text-center">5€ – 15€</td>
+                                <td class="text-end"><span class="total-badge">120€ – 135€</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="fw-bold fs-6">NOS Alive 2026</div>
+                                    <small style="color: var(--text-muted-custom);"><i class="bi bi-geo-alt-fill text-info me-1"></i>Passeio Marítimo de Algés</small>
+                                </td>
+                                <td class="text-center fw-semibold">79 €</td>
+                                <td class="text-center">190 € <small class="d-block" style="color: var(--text-muted-custom);">(3 Dias)</small></td>
+                                <td class="text-center">20€ – 30€</td>
+                                <td class="text-center">4€ – 12€</td>
+                                <td class="text-end"><span class="total-badge">110€ – 125€</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="fw-bold fs-6">Super Bock Super Rock 2026</div>
+                                    <small style="color: var(--text-muted-custom);"><i class="bi bi-geo-alt-fill text-warning me-1"></i>MEO Arena</small>
+                                </td>
+                                <td class="text-center fw-semibold">72 €</td>
+                                <td class="text-center">154 € <small class="d-block" style="color: var(--text-muted-custom);">(3 Dias)</small></td>
+                                <td class="text-center">20€ – 28€</td>
+                                <td class="text-center">3€ – 10€</td>
+                                <td class="text-end"><span class="total-badge">100€ – 115€</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="fw-bold fs-6">MEO Kalorama 2026</div>
+                                    <small style="color: var(--text-muted-custom);"><i class="bi bi-geo-alt-fill text-success me-1"></i>Parque da Bela Vista</small>
+                                </td>
+                                <td class="text-center fw-semibold">65 €</td>
+                                <td class="text-center">145 € <small class="d-block" style="color: var(--text-muted-custom);">(3 Dias)</small></td>
+                                <td class="text-center">18€ – 25€</td>
+                                <td class="text-center">3€ – 8€</td>
+                                <td class="text-end"><span class="total-badge">90€ – 105€</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- D. Secção "A Fatura Oculta" (Grid de Cartões com Destaque Visual) -->
+    <section id="fatura-oculta" class="section-padding">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="text-uppercase fw-bold small" style="color: var(--pink-electric); letter-spacing: 1px;">O Que Não Vem no Cartaz</span>
+                <h2 class="fw-bold mt-1">A Fatura Oculta dos Recintos</h2>
+                <p class="mx-auto" style="max-width: 650px; color: var(--text-muted-custom);">
+                    Pequenas taxas e regras logísticas que somam dezenas de euros ao final da noite.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Destaque 1 -->
+                <div class="col-md-4">
+                    <div class="custom-card hidden-bill-card p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="fs-1 text-warning"><i class="bi bi-cup-straw"></i></span>
+                            <span class="badge bg-warning text-dark fw-bold">+1,50€ a 2,50€</span>
+                        </div>
+                        <h3 class="h5 fw-bold mb-2">O Copo Reutilizável</h3>
+                        <p class="mb-0" style="color: var(--text-muted-custom);">
+                            Taxa inicial obrigatória de <strong>1,50 € a 2,50 €</strong> por copo no primeiro pedido. Muitas vezes não é reembolsável ou implica filas longas no final da noite para reaver o caução.
+                        </p>
+                    </div>
+                </div>
+                <!-- Destaque 2 -->
+                <div class="col-md-4">
+                    <div class="custom-card hidden-bill-card p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="fs-1 text-info"><i class="bi bi-taxi-front-fill"></i></span>
+                            <span class="badge bg-info text-dark fw-bold">Tarifa Dinâmica 3x</span>
+                        </div>
+                        <h3 class="h5 fw-bold mb-2">O Regresso de Madrugada</h3>
+                        <p class="mb-0" style="color: var(--text-muted-custom);">
+                            Entre a 01h00 e as 03h00, a procura dispara a tarifa dinâmica das apps TVDE (Uber/Bolt) na saída dos recintos, transformando viagens de 8 € em faturas de 25 € ou mais.
+                        </p>
+                    </div>
+                </div>
+                <!-- Destaque 3 -->
+                <div class="col-md-4">
+                    <div class="custom-card hidden-bill-card p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="fs-1 text-danger"><i class="bi bi-slash-circle"></i></span>
+                            <span class="badge bg-danger text-white fw-bold">Consumo Interno</span>
+                        </div>
+                        <h3 class="h5 fw-bold mb-2">Comida e Proibição de Entrada</h3>
+                        <p class="mb-0" style="color: var(--text-muted-custom);">
+                            A revista à entrada limita severamente a entrada com comida ou bebida própria, criando a obrigatoriedade de consumir nos pontos de <em>street food</em> oficiais do recinto.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- E. Calculadora Interativa de Custos -->
+    <section id="calculadora" class="section-padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="calculator-card p-4 p-md-5">
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-7">
+                                <span class="badge rounded-pill badge-festival mb-2">Ferramenta Interativa</span>
+                                <h2 class="fw-bold mb-2">Simulador de Orçamento</h2>
+                                <p class="mb-4" style="color: var(--text-muted-custom);">
+                                    Personaliza as tuas escolhas para descobrir quanto vais gastar num dia de festival em Lisboa.
+                                </p>
+
+                                <form id="budgetForm" onsubmit="event.preventDefault(); calcularOrcamento();">
+                                    <!-- Dropdown 1: Festival -->
+                                    <div class="mb-3">
+                                        <label for="festivalSelect" class="form-label fw-semibold">
+                                            <i class="bi bi-ticket-perforated me-1 text-danger"></i> 1. Escolhe o teu Festival (Bilhete Diário)
+                                        </label>
+                                        <select id="festivalSelect" class="form-select form-select-custom">
+                                            <option value="84" data-name="Rock in Rio Lisboa">Rock in Rio Lisboa — 84 €</option>
+                                            <option value="79" data-name="NOS Alive">NOS Alive — 79 €</option>
+                                            <option value="72" data-name="Super Bock Super Rock">Super Bock Super Rock (SBSR) — 72 €</option>
+                                            <option value="65" data-name="MEO Kalorama">MEO Kalorama — 65 €</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Dropdown 2: Transporte -->
+                                    <div class="mb-4">
+                                        <label for="transportSelect" class="form-label fw-semibold">
+                                            <i class="bi bi-bus-front me-1 text-info"></i> 2. Como vais e voltas? (Ida e Volta)
+                                        </label>
+                                        <select id="transportSelect" class="form-select form-select-custom">
+                                            <option value="4">Metro / Comboio CP — 4 €</option>
+                                            <option value="12">TVDE (Uber/Bolt) Partilhado com amigos — 12 €</option>
+                                            <option value="15">Carro Próprio + Estacionamento — 15 €</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Input / Radio & Checkbox: Alimentação + Copo -->
+                                    <div class="mb-4">
+                                        <label class="form-label fw-semibold d-block">
+                                            <i class="bi bi-egg-fried me-1 text-warning"></i> 3. Alimentação e Bebidas no Recinto
+                                        </label>
+                                        <div class="row g-2">
+                                            <div class="col-sm-6">
+                                                <label class="food-option-card d-block active" id="labelFoodEco">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="foodOption" id="foodEco" value="20" checked>
+                                                        <span class="fw-bold d-block">Opção Económica (20 €)</span>
+                                                        <small style="color: var(--text-muted-custom);">1 Menu rápido + 1 bebida</small>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="food-option-card d-block" id="labelFoodMed">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="foodOption" id="foodMed" value="30">
+                                                        <span class="fw-bold d-block">Opção Média (30 €)</span>
+                                                        <small style="color: var(--text-muted-custom);">Jantar + snack + 2 bebidas</small>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Checkbox extra Copo Reutilizável -->
+                                        <div class="form-check mt-3">
+                                            <input class="form-check-input" type="checkbox" value="2" id="cupCheck" checked>
+                                            <label class="form-check-label small" for="cupCheck" style="color: var(--text-muted-custom);">
+                                                Incluir taxa de Copo Reutilizável (+2 €)
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-festival-primary w-100 py-3">
+                                        <i class="bi bi-lightning-charge-fill me-1"></i> Calcular Orçamento Total
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Resultado em Destaque -->
+                            <div class="col-lg-5">
+                                <div class="result-box text-center">
+                                    <span class="text-uppercase small fw-bold" style="color: var(--text-muted-custom); letter-spacing: 1px;">Custo Total Estimado</span>
+                                    <div id="festivalSelectedTitle" class="fw-bold text-info mt-1 mb-3">Rock in Rio Lisboa</div>
+                                    
+                                    <div class="total-price-display my-3" id="totalResult">110 €</div>
+                                    <p class="small mb-4" style="color: var(--text-muted-custom);">Por pessoa / 1 dia de festival</p>
+
+                                    <hr class="border-secondary opacity-25">
+
+                                    <div class="text-start small mt-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span style="color: var(--text-muted-custom);">Bilhete Diário:</span>
+                                            <strong id="breakdownTicket">84 €</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span style="color: var(--text-muted-custom);">Transporte:</span>
+                                            <strong id="breakdownTransport">4 €</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span style="color: var(--text-muted-custom);">Alimentação & Copo:</span>
+                                            <strong id="breakdownFood">22 €</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- F. Dicas Rápidas de Poupança (Accordion / Colapso Bootstrap) -->
+    <section id="dicas" class="section-padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center mb-5">
+                        <span class="text-uppercase fw-bold small" style="color: var(--pink-electric); letter-spacing: 1px;">Kit de Sobrevivência Financeira</span>
+                        <h2 class="fw-bold mt-1">4 Dicas Rápidas para Poupar no Recinto</h2>
+                        <p style="color: var(--text-muted-custom);">Pequenos truques testados que cortam até 30% da fatura final.</p>
+                    </div>
+
+                    <div class="accordion accordion-custom" id="savingsAccordion">
+                        <!-- Item 1 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <i class="bi bi-droplet-half me-3 text-info"></i> 1. Leva uma garrafa de água plástica sem tampa
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#savingsAccordion">
+                                <div class="accordion-body">
+                                    A maioria dos grandes festivais em Lisboa permite a entrada de uma garrafa de água plástica transparente (até 0,5L) desde que vá <strong>sem tampa</strong>. Todos os recintos contam com bebedouros gratuitos da EPAL: podes reabastecer a noite toda e poupar entre 9 € e 15 € só em água.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <i class="bi bi-phone-vibrate me-3 text-warning"></i> 2. Define um teto diário no MB WAY ou usa cartão pré-pago
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#savingsAccordion">
+                                <div class="accordion-body">
+                                    Os pagamentos <em>contactless</em> e pulseiras <em>cashless</em> fazem-nos perder a noção do dinheiro gasto no escuro do concerto. Antes de saíres de casa, transfere apenas o teu orçamento de alimentação (ex.: 25 €) para um cartão virtual ou conta separada.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    <i class="bi bi-train-front me-3 text-success"></i> 3. Planeia o regresso com os transportes especiais noturnos
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#savingsAccordion">
+                                <div class="accordion-body">
+                                    Comboios da CP (Linha de Cascais no NOS Alive ou Linha do Norte no Parque Tejo) e a Carris costumam reforçar os horários de madrugada em parceria com os festivais. Caso optes por TVDE, caminha 10 a 15 minutos para fora do perímetro de trânsito cortado e divide a viagem com 3 amigos.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 4 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    <i class="bi bi-recycle me-3 text-danger"></i> 4. Reutiliza o copo de edições anteriores (ou leva fita porta-copos)
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#savingsAccordion">
+                                <div class="accordion-body">
+                                    Perder o copo a meio de um concerto obriga-te a pagar mais 2 € no pedido seguinte. Leva um suporte de pescoço ou mosquetão para prender o copo à mochila e, se tiveres copos oficiais da mesma marca/promotora de anos anteriores, confirma se são aceites no recinto.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- G. Rodapé (Footer) -->
+    <footer class="py-5">
+        <div class="container">
+            <div class="row align-items-center justify-content-between gy-4">
+                <div class="col-md-6 text-center text-md-start">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
+                        <i class="bi bi-broadcast-pin text-danger fs-5"></i>
+                        <span class="fw-bold fs-5">Laboratório de Comunicação Digital — Desafio RFM 2026</span>
+                    </div>
+                    <p class="small mb-0" style="color: var(--text-muted-custom);">
+                        Reportagem Multimédia & Literacia Financeira para Jovens Adultos. Todos os direitos reservados © 2026.
+                    </p>
+                </div>
+
+                <div class="col-md-6 text-center text-md-end">
+                    <span class="small d-block mb-2" style="color: var(--text-muted-custom);">Partilha esta reportagem e ouve a playlist oficial:</span>
+                    <div class="d-inline-flex gap-2">
+                        <a href="#tiktok-share" class="social-btn" title="Partilhar no TikTok" aria-label="TikTok">
+                            <i class="bi bi-tiktok"></i>
+                        </a>
+                        <a href="#instagram-share" class="social-btn" title="Partilhar no Instagram" aria-label="Instagram">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#spotify-playlist" class="social-btn" title="Ouvir no Spotify" aria-label="Spotify">
+                            <i class="bi bi-spotify"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap v5.3 Bundle JS via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <!-- JavaScript Vanilla para a Calculadora Interativa -->
+    <script>
+        const festivalSelect = document.getElementById('festivalSelect');
+        const transportSelect = document.getElementById('transportSelect');
+        const foodEco = document.getElementById('foodEco');
+        const foodMed = document.getElementById('foodMed');
+        const cupCheck = document.getElementById('cupCheck');
+
+        const labelFoodEco = document.getElementById('labelFoodEco');
+        const labelFoodMed = document.getElementById('labelFoodMed');
+
+        const totalResult = document.getElementById('totalResult');
+        const festivalSelectedTitle = document.getElementById('festivalSelectedTitle');
+        const breakdownTicket = document.getElementById('breakdownTicket');
+        const breakdownTransport = document.getElementById('breakdownTransport');
+        const breakdownFood = document.getElementById('breakdownFood');
+
+        function calcularOrcamento() {
+            // Obter valores selecionados
+            const ticketPrice = parseFloat(festivalSelect.value);
+            const festivalName = festivalSelect.options[festivalSelect.selectedIndex].getAttribute('data-name');
+            const transportPrice = parseFloat(transportSelect.value);
+            const foodPrice = foodEco.checked ? parseFloat(foodEco.value) : parseFloat(foodMed.value);
+            const cupPrice = cupCheck.checked ? parseFloat(cupCheck.value) : 0;
+
+            // Atualizar estilo visual dos cartões de alimentação
+            if (foodEco.checked) {
+                labelFoodEco.classList.add('active');
+                labelFoodMed.classList.remove('active');
+            } else {
+                labelFoodMed.classList.add('active');
+                labelFoodEco.classList.remove('active');
+            }
+
+            // Soma total
+            const totalFoodAndCup = foodPrice + cupPrice;
+            const total = ticketPrice + transportPrice + totalFoodAndCup;
+
+            // Atualizar DOM com pequena animação de destaque
+            festivalSelectedTitle.textContent = festivalName;
+            breakdownTicket.textContent = `${ticketPrice} €`;
+            breakdownTransport.textContent = `${transportPrice} €`;
+            breakdownFood.textContent = `${totalFoodAndCup} €`;
+
+            totalResult.style.transform = 'scale(1.08)';
+            totalResult.style.transition = 'transform 0.15s ease';
+            totalResult.textContent = `${total} €`;
+
+            setTimeout(() => {
+                totalResult.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        // Eventos para cálculo em tempo real sempre que o utilizador muda uma opção
+        festivalSelect.addEventListener('change', calcularOrcamento);
+        transportSelect.addEventListener('change', calcularOrcamento);
+        foodEco.addEventListener('change', calcularOrcamento);
+        foodMed.addEventListener('change', calcularOrcamento);
+        cupCheck.addEventListener('change', calcularOrcamento);
+
+        // Inicializar ao carregar a página
+        document.addEventListener('DOMContentLoaded', calcularOrcamento);
+    </script>
+</body>
+</html>
