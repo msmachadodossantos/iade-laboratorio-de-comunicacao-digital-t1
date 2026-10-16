@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFM Hub — Toda a RFM, à tua maneira</title>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --rfm-red: #E30613;
+            --rfm-red-dark: #b8000b;
+            --rfm-red-soft: #fff0f1;
+            --rfm-black: #121212;
+            --rfm-dark-gray: #222222;
+            --rfm-light-gray: #f5f6f8;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #ffffff;
+            color: var(--rfm-black);
+            padding-bottom: 95px; /* Espaço para o mini-player fixo */
+        }
+
+        /* Utilitários de Cores RFM */
+        .bg-rfm-red { background-color: var(--rfm-red) !important; color: #fff !important; }
+        .bg-rfm-black { background-color: var(--rfm-black) !important; color: #fff !important; }
+        .bg-rfm-soft { background-color: var(--rfm-red-soft) !important; }
+        .text-rfm-red { color: var(--rfm-red) !important; }
+        
+        .btn-rfm-red {
+            background-color: var(--rfm-red);
+            color: #fff;
+            border: none;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .btn-rfm-red:hover, .btn-rfm-red:focus {
+            background-color: var(--rfm-red-dark);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-rfm-dark {
+            background-color: var(--rfm-black);
+            color: #fff;
+            border: none;
+            font-weight: 700;
+        }
+        .btn-rfm-dark:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Navbar e Submenus (8 Secções do Sitemap) */
+        .navbar-rfm {
+            background-color: #ffffff;
+            border-bottom: 2px solid #eeeeee;
+            z-index: 1040;
+        }
+        .brand-box {
+            background-color: var(--rfm-black);
+            color: #fff !important;
+            font-weight: 900;
+            letter-spacing: 1px;
+            padding: 6px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 1.4rem;
+        }
+        .brand-box:hover {
+            background-color: var(--rfm-red);
+        }
+        .navbar-rfm .nav-link {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--rfm-black);
+            text-transform: uppercase;
+            padding: 0.6rem 0.75rem !important;
+        }
+        .navbar-rfm .nav-link:hover,
+        .navbar-rfm .nav-link.active {
+            color: var(--rfm-red);
+        }
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            border-radius: 10px;
+            padding: 0.5rem;
+        }
+        .dropdown-item {
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+        .dropdown-item:hover {
+            background-color: var(--rfm-red-soft);
+            color: var(--rfm-red);
+        }
+
+        /* Títulos e Cartões */
+        .section-header {
+            font-size: 1.05rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-rfm {
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: #fff;
+        }
+        .card-rfm:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .video-vertical {
+            aspect-ratio: 9/14;
+            background: linear-gradient(145deg, #2b2b2b, #121212);
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            color: white;
+        }
+        .video-horizontal {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #2b2b2b, #141414);
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            color: white;
+        }
+        .play-overlay {
+            width: 56px;
+            height: 56px;
+            background: rgba(227, 6, 19, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: #fff;
+            transition: transform 0.2s ease;
+        }
+        .video-vertical:hover .play-overlay,
+        .video-horizontal:hover .play-overlay {
+            transform: scale(1.1);
+        }
+
+        /* Avatares Caras RFM */
+        .cara-avatar {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--rfm-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            background: var(--rfm-light-gray);
+            color: var(--rfm-black);
+            margin: 0 auto;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cara-avatar:hover {
+            background: var(--rfm-red);
+            color: #fff;
+        }
+
+        /* Mini-player Fixo Sempre Presente */
+        .mini-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-top: 3px solid var(--rfm-red);
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.1);
+            z-index: 1050;
+            padding: 10px 0;
+        }
+        .pulse-live {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: var(--rfm-red);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(227, 6, 19, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(227, 6, 19, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(227, 6, 19, 0); }
+        }
+
+        /* Breadcrumb Nivel 1 > Nivel 2 > Nivel 3 */
+        .sitemap-badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =================================================================
+         SEMPRE PRESENTE: CABEÇALHO COM 8 SECÇÕES E SUBMENUS + PESQUISA
+         ================================================================= -->
+    <nav class="navbar navbar-expand-xl navbar-rfm sticky-top py-2">
+        <div class="container">
+            <!-- INÍCIO - Home do RFM Hub -->
+            <a class="brand-box me-3" href="#home" onclick="navigate('home')">RFM</a>
+
+            <div class="d-flex align-items-center order-xl-3 gap-2">
+                <!-- Pesquisa no cabeçalho -->
+                <button class="btn btn-light rounded-circle border" data-bs-toggle="modal" data-bs-target="#searchModal" title="Pesquisar no RFM Hub">
+                    <i class="bi bi-search"></i>
+                </button>
+                <!-- Botão Ouvir sempre acessível -->
+                <button class="btn btn-rfm-red rounded-pill px-3 py-2 d-flex align-items-center gap-1 shadow-sm" onclick="navigate('ouvir', 'emissao')">
+                    <i class="bi bi-play-fill fs-5 lh-1"></i> <span>OUVIR</span>
+                </button>
+                <button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#rfmMainNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+            <!-- NÍVEL 1 (8 ITENS) E NÍVEL 2 (SUBMENUS) -->
+            <div class="collapse navbar-collapse order-xl-2" id="rfmMainNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-xl-0">
+                    
+                    <!-- 1. OUVIR -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Ouvir</a>
+                        <ul class="dropdown-menu">
+                            <li><span class="dropdown-header small text-muted">Direto e frequências</span></li>
+                            <li><a class="dropdown-item" href="#ouvir-emissao" onclick="navigate('ouvir', 'emissao')">Emissão RFM (Direto)</a></li>
+                            <li><a class="dropdown-item" href="#ouvir-frequencias" onclick="navigate('ouvir', 'frequencias')">Frequências</a></li>
+                            <li><a class="dropdown-item" href="#ouvir-ultimas" onclick="navigate('ouvir', 'ultimas')">Últimas tocadas</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 2. ATUALIDADE -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Atualidade</a>
+                        <ul class="dropdown-menu">
+                            <li><span class="dropdown-header small text-muted">Notícias e passatempos</span></li>
+                            <li><a class="dropdown-item" href="#atualidade-destaques" onclick="navigate('atualidade', 'destaques')">Destaques</a></li>
+                            <li><a class="dropdown-item" href="#atualidade-recentes" onclick="navigate('atualidade', 'recentes')">Mais recentes</a></li>
+                            <li><a class="dropdown-item" href="#atualidade-passatempos" onclick="navigate('atualidade', 'passatempos')">Passatempos</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 3. RÁDIOS -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Rádios</a>
+                        <ul class="dropdown-menu">
+                            <li><span class="dropdown-header small text-muted">As 10 rádios online + Moods</span></li>
+                            <li><a class="dropdown-item fw-bold text-rfm-red" href="#radios-rfm" onclick="openDetail('radio', 'rfm-direto')">RFM (no ar agora)</a></li>
+                            <li><a class="dropdown-item" href="#radios-novas" onclick="openDetail('radio', 'novas-jazzy')">Novas · Jazzy</a></li>
+                            <li><a class="dropdown-item" href="#radios-dance" onclick="openDetail('radio', 'dance-latinas')">Dance It · Latinas</a></li>
+                            <li><a class="dropdown-item" href="#radios-oceano" onclick="openDetail('radio', 'oceano-pacifico')">Oceano Pacífico</a></li>
+                            <li><a class="dropdown-item" href="#radios-decadas" onclick="openDetail('radio', 'decadas')">80's · 90's · 00's</a></li>
+                            <li><a class="dropdown-item" href="#radios-rocks" onclick="openDetail('radio', 'rocks')">Rocks</a></li>
+                            <li><a class="dropdown-item" href="#radios-portugal" onclick="openDetail('radio', 'toca-portugal')">Toca Portugal</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-bold" href="#radios-todas" onclick="navigate('radios', 'todas')">Ver as 10 rádios & Playlists</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 4. PROGRAMAS -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Programas</a>
+                        <ul class="dropdown-menu">
+                            <li><span class="dropdown-header small text-muted">Grelha e locutores (Caras RFM)</span></li>
+                            <li><a class="dropdown-item" href="#prog-cafe" onclick="openDetail('programa', 'cafe-da-manha')">Café da Manhã</a></li>
+                            <li><a class="dropdown-item" href="#prog-tabonito" onclick="openDetail('programa', 'ta-bonito')">Tá Bonito</a></li>
+                            <li><a class="dropdown-item" href="#prog-10musicas" onclick="openDetail('programa', '10-musicas')">10 músicas seguidas</a></li>
+                            <li><a class="dropdown-item" href="#prog-oceano" onclick="openDetail('programa', 'oceano-prog')">Oceano Pacífico</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><span class="dropdown-header small text-muted">Caras RFM</span></li>
+                            <li><a class="dropdown-item" href="#cara-daniel" onclick="openDetail('programa', 'daniel-fontoura')">Daniel Fontoura</a></li>
+                            <li><a class="dropdown-item" href="#cara-joana" onclick="openDetail('programa', 'joana-rodrigo')">Joana Cruz e R. Gomes</a></li>
+                            <li><a class="dropdown-item" href="#cara-catarina" onclick="openDetail('programa', 'catarina-figueiredo')">Catarina Figueiredo</a></li>
+                            <li><a class="dropdown-item" href="#cara-ana" onclick="openDetail('programa', 'ana-ines')">Ana Pinheiro e I. Andrade</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-bold" href="#programas-grelha" onclick="navigate('programas', 'grelha')">Grelha completa & Caras RFM</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 5. PODCASTS -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Podcasts</a>
+                        <ul class="dropdown-menu">
+                            <li><span class="dropdown-header small text-muted">Séries e episódios</span></li>
+                            <li><a class="dropdown-item" href="#pod-cataplana" onclick="openDetail('podcast', 'cataplana')">Cataplana de Paixão</a></li>
+                            <li><a class="dropdown-item" href="#pod-ninguem" onclick="openDetail('podcast', 'ninguem-pod')">Ninguém POD Comigo</a></li>
+                            <li><a class="dropdown-item" href="#pod-porchat" onclick="openDetail('podcast', 'porchat')">PorchatGPT</a></li>
+                            <li><a class="dropdown-item" href="#pod-marias" onclick="openDetail('podcast', 'marias-genz')">As Marias GenZ</a></li>
+                            <li><a class="dropdown-item" href="#pod-falar" onclick="openDetail('podcast', 'falar-demais')">Falar Demais</a></li>
+                            <li><a class="dropdown-item" href="#pod-top25" onclick="openDetail('podcast', 'top25')">Top 25 RFM</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-bold" href="#podcasts-todos" onclick="navigate('podcasts', 'todos')">Ver todos (e Episódios Rápidos)</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 6. VÍDEOS -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Vídeos</a>
+                        <ul class="dropdown-menu">
+                            <li><span class="dropdown-header small text-muted">Entrevistas, humor e bastidores</span></li>
+                            <li><a class="dropdown-item" href="#vid-ultimos" onclick="navigate('videos', 'ultimos')">Últimos vídeos</a></li>
+                            <li><a class="dropdown-item" href="#vid-bastidores" onclick="navigate('videos', 'bastidores')">Bastidores</a></li>
+                            <li><a class="dropdown-item" href="#vid-quemusica" onclick="navigate('videos', 'que-musica')">Que música era?</a></li>
+                            <li><a class="dropdown-item" href="#vid-falardemais" onclick="navigate('videos', 'falar-demais')">Falar Demais (Videocast)</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 7. EVENTOS -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Eventos</a>
+                        <ul class="dropdown-menu">
+                            <li><span class="dropdown-header small text-muted">Concertos e bilhetes</span></li>
+                            <li><a class="dropdown-item" href="#ev-proximos" onclick="navigate('eventos', 'proximos')">Próximos eventos</a></li>
+                            <li><a class="dropdown-item" href="#ev-grandioso" onclick="openDetail('evento', 'grandioso')">Que Grandioso Espetáculo...</a></li>
+                            <li><a class="dropdown-item" href="#ev-sbsr" onclick="openDetail('evento', 'super-bock')">Super Bock em Stock</a></li>
+                            <li><a class="dropdown-item fw-bold text-rfm-red" href="#ev-bilhetes" onclick="navigate('eventos', 'ganha-bilhetes')">Ganha bilhetes</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 8. A RFM -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">A RFM</a>
+                        <ul class="dropdown-menu">
+                            <li><span class="dropdown-header small text-muted">Institucional</span></li>
+                            <li><a class="dropdown-item" href="#rfm-historia" onclick="navigate('arfm', 'historia')">A nossa história</a></li>
+                            <li><a class="dropdown-item" href="#rfm-newsletter" onclick="navigate('arfm', 'newsletter')">Newsletter</a></li>
+                            <li><a class="dropdown-item" href="#rfm-notificacoes" onclick="navigate('arfm', 'notificacoes')">Notificações</a></li>
+                            <li><a class="dropdown-item" href="#rfm-contactos" onclick="navigate('arfm', 'contactos')">Contactos</a></li>
+                            <li><a class="dropdown-item" href="#rfm-publicidade" onclick="navigate('arfm', 'publicidade')">Publicidade</a></li>
+                            <li><a class="dropdown-item" href="#rfm-carreiras" onclick="navigate('arfm', 'carreiras')">Carreiras</a></li>
+                            <li><a class="dropdown-item" href="#rfm-transparencia" onclick="navigate('arfm', 'transparencia')">Transparência</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Pesquisa no fim do menu (conforme Sitemap pág. 4) -->
+                <form class="d-xl-none mt-3 mb-2" onsubmit="event.preventDefault(); executeSearch(this.querySelector('input').value);">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Pesquisar programas, músicas, vídeos...">
+                        <button class="btn btn-rfm-red" type="submit"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Barra Rápida das 5 Portas de Entrada (Coerência com o Wireframe da Home) -->
+    <div class="bg-light border-bottom py-2">
+        <div class="container d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-2 overflow-auto py-1">
+                <span class="badge bg-rfm-black text-uppercase">Acesso Rápido:</span>
+                <button class="btn btn-sm btn-outline-dark rounded-pill fw-semibold" onclick="navigate('ouvir', 'emissao')">Em Direto</button>
+                <button class="btn btn-sm btn-outline-dark rounded-pill fw-semibold" onclick="navigate('videos', 'ultimos')">Vídeos</button>
+                <button class="btn btn-sm btn-outline-dark rounded-pill fw-semibold" onclick="navigate('podcasts', 'todos')">Podcasts</button>
+                <button class="btn btn-sm btn-outline-dark rounded-pill fw-semibold" onclick="navigate('radios', 'todas')">Playlists & Rádios</button>
+                <button class="btn btn-sm btn-outline-dark rounded-pill fw-semibold" onclick="navigate('programas', 'grelha')">Caras RFM</button>
+            </div>
+            <span class="small text-muted d-none d-md-inline"><i class="bi bi-broadcast text-rfm-red me-1"></i><strong>Promessa:</strong> «Toda a RFM, à tua maneira.»</span>
+        </div>
+    </div>
+
+    <!-- =================================================================
+         CONTEÚDO PRINCIPAL DA SPA (VIEWS DINÂMICAS)
+         ================================================================= -->
+    <main class="container my-4" id="spa-main">
+
+        <!-- =============================================================
+             NÍVEL 0: INÍCIO · HOME DO RFM HUB (Wireframe Página 5)
+             ============================================================= -->
+        <section id="view-home" class="spa-view">
+            
+            <!-- TOPO: 1. AGORA (Ouvir e ver o que está a acontecer - Blocos 2 e 3) -->
+            <div class="row g-4 align-items-stretch">
+                <!-- Bloco 2: Destaque do Dia -->
+                <div class="col-lg-8">
+                    <div class="card-rfm h-100 p-3 bg-dark text-white d-flex flex-column justify-content-between" style="background: linear-gradient(135deg, #1b1b1b 0%, #2d1215 100%);">
+                        <div>
+                            <span class="badge bg-rfm-red px-3 py-2 text-uppercase mb-3">Destaque do Dia · Humor</span>
+                            <div class="video-horizontal mb-3 d-flex align-items-center justify-content-center border border-secondary" onclick="openDetail('video', 'porchat-cafe')">
+                                <div class="text-center p-3">
+                                    <div class="play-overlay mx-auto mb-2"><i class="bi bi-play-fill"></i></div>
+                                    <span class="badge bg-dark bg-opacity-75">03:45 · Clip do Momento</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div>
+                                <h4 class="fw-bold mb-1">Fábio Porchat invade o Café da Manhã e improvisa trocadilhos!</h4>
+                                <p class="text-white-50 small mb-0">O quadro de humor mais partilhado de hoje no TikTok e Instagram.</p>
+                            </div>
+                            <button class="btn btn-rfm-red px-4 py-2" onclick="openDetail('video', 'porchat-cafe')">VER AGORA</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloco 3: A Tocar Agora (Diogo, 42 - Ouvir e Votar) -->
+                <div class="col-lg-4">
+                    <div class="card-rfm h-100 p-4 d-flex flex-column justify-content-between border-danger border-opacity-25">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-rfm-soft text-rfm-red px-3 py-2 text-uppercase fw-bold">
+                                <span class="pulse-live me-1"></span> A Tocar Agora
+                            </span>
+                            <small class="text-muted fw-semibold">Emissão RFM</small>
+                        </div>
+                        <div class="text-center my-3">
+                            <div class="rounded-circle bg-rfm-black text-white mx-auto d-flex flex-column align-items-center justify-content-center shadow" style="width: 135px; height: 135px; border: 4px solid var(--rfm-red);">
+                                <i class="bi bi-disc fs-1 text-rfm-red"></i>
+                                <small class="fw-bold mt-1">NO AR</small>
+                            </div>
+                            <h5 class="fw-bold mt-3 mb-1" id="home-now-playing-title">Coldplay — Viva La Vida</h5>
+                            <p class="text-muted small mb-2">Programa: <strong>10 Músicas Seguidas</strong></p>
+                            <div class="progress mx-auto" style="height: 6px; max-width: 220px;">
+                                <div class="progress-bar bg-rfm-red" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="#bloco-participa" class="btn btn-rfm-red py-2">VOTAR NA PRÓXIMA</a>
+                            <button class="btn btn-outline-dark btn-sm" onclick="navigate('ouvir', 'emissao')">Abrir Web Player Completo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MEIO: 2. ESCOLHER (Por momento, formato ou pessoa - Blocos 4, 5 e 6) -->
+            
+            <!-- Bloco 4: Para o teu momento (Tomás, 19 - Playlists e Moods) -->
+            <div class="mt-5">
+                <div class="section-header">
+                    <span><i class="bi bi-compass text-rfm-red me-2"></i>4. Para o Teu Momento</span>
+                    <a href="#radios-todas" onclick="navigate('radios', 'todas')" class="text-rfm-red small text-decoration-none fw-bold">Ver todas &rarr;</a>
+                </div>
+                <div class="d-flex gap-2 mb-3 overflow-auto pb-2" id="moment-filters">
+                    <button class="btn btn-dark rounded-pill px-4 fw-semibold" onclick="filterMoments('carro', this)">🚗 No carro</button>
+                    <button class="btn btn-outline-dark rounded-pill px-4 fw-semibold" onclick="filterMoments('trabalhar', this)">💻 Trabalhar</button>
+                    <button class="btn btn-outline-dark rounded-pill px-4 fw-semibold" onclick="filterMoments('treinar', this)">⚡ Treinar</button>
+                    <button class="btn btn-outline-dark rounded-pill px-4 fw-semibold" onclick="filterMoments('noite', this)">🎉 Sair à noite</button>
+                    <button class="btn btn-outline-dark rounded-pill px-4 fw-semibold" onclick="filterMoments('relaxar', this)">🌊 Relaxar</button>
+                </div>
+                <div class="row g-3" id="moment-cards-container">
+                    <!-- Preenchido dinamicamente via JS -->
+                </div>
+            </div>
+
+            <!-- Bloco 5: Vídeos e Humor (Inês, 26 - Clips curtos e verticais) -->
+            <div class="mt-5">
+                <div class="section-header">
+                    <span><i class="bi bi-phone-vibrate text-rfm-red me-2"></i>5. Vídeos e Humor (Formato Vertical)</span>
+                    <a href="#vid-ultimos" onclick="navigate('videos', 'ultimos')" class="text-rfm-red small text-decoration-none fw-bold">Ver todos &rarr;</a>
+                </div>
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="video-vertical p-3 d-flex flex-column justify-content-between" onclick="openDetail('video', 'que-musica-clip1')">
+                            <span class="badge bg-rfm-red align-self-start">Que música era?</span>
+                            <div class="play-overlay mx-auto"><i class="bi bi-play-fill"></i></div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Joana Cruz tenta adivinhar hit dos anos 90 em 2 segundos!</h6>
+                                <small class="text-white-50"><i class="bi bi-tiktok me-1"></i>00:58</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="video-vertical p-3 d-flex flex-column justify-content-between" onclick="openDetail('video', 'bastidores-calema')">
+                            <span class="badge bg-dark align-self-start">Bastidores</span>
+                            <div class="play-overlay mx-auto"><i class="bi bi-play-fill"></i></div>
+                            <div>
+                                <h6 class="fw-bold mb-1">O que os Calema fizeram antes de ligar os microfones</h6>
+                                <small class="text-white-50"><i class="bi bi-instagram me-1"></i>01:15</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="video-vertical p-3 d-flex flex-column justify-content-between" onclick="openDetail('video', 'falar-demais-clip')">
+                            <span class="badge bg-rfm-red align-self-start">Falar Demais</span>
+                            <div class="play-overlay mx-auto"><i class="bi bi-play-fill"></i></div>
+                            <div>
+                                <h6 class="fw-bold mb-1">«Nunca mais volto a mandar áudio no WhatsApp!»</h6>
+                                <small class="text-white-50"><i class="bi bi-youtube me-1"></i>01:30</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="video-vertical p-3 d-flex flex-column justify-content-between" onclick="openDetail('video', 'porchat-cafe')">
+                            <span class="badge bg-rfm-red align-self-start">Humor</span>
+                            <div class="play-overlay mx-auto"><i class="bi bi-play-fill"></i></div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Desafio de sotaques com Rodrigo Gomes</h6>
+                                <small class="text-white-50"><i class="bi bi-tiktok me-1"></i>00:49</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloco 6: Caras RFM (Personalidades Digitais) -->
+            <div class="mt-5">
+                <div class="section-header">
+                    <span><i class="bi bi-people-fill text-rfm-red me-2"></i>6. Caras RFM</span>
+                    <a href="#programas-grelha" onclick="navigate('programas', 'grelha')" class="text-rfm-red small text-decoration-none fw-bold">Ver todas &rarr;</a>
+                </div>
+                <div class="d-flex gap-4 overflow-auto py-2 text-center">
+                    <div style="min-width: 110px;" onclick="openDetail('programa', 'daniel-fontoura')">
+                        <div class="cara-avatar">DF</div>
+                        <p class="fw-bold small mt-2 mb-0">Daniel Fontoura</p>
+                        <small class="text-muted" style="font-size: 0.75rem;">Café da Manhã</small>
+                    </div>
+                    <div style="min-width: 110px;" onclick="openDetail('programa', 'joana-rodrigo')">
+                        <div class="cara-avatar">JC</div>
+                        <p class="fw-bold small mt-2 mb-0">Joana Cruz</p>
+                        <small class="text-muted" style="font-size: 0.75rem;">Café da Manhã</small>
+                    </div>
+                    <div style="min-width: 110px;" onclick="openDetail('programa', 'joana-rodrigo')">
+                        <div class="cara-avatar">RG</div>
+                        <p class="fw-bold small mt-2 mb-0">Rodrigo Gomes</p>
+                        <small class="text-muted" style="font-size: 0.75rem;">Café da Manhã</small>
+                    </div>
+                    <div style="min-width: 110px;" onclick="openDetail('programa', 'catarina-figueiredo')">
+                        <div class="cara-avatar">CF</div>
+                        <p class="fw-bold small mt-2 mb-0">Catarina Figueiredo</p>
+                        <small class="text-muted" style="font-size: 0.75rem;">10 Músicas</small>
+                    </div>
+                    <div style="min-width: 110px;" onclick="openDetail('programa', 'ana-ines')">
+                        <div class="cara-avatar">AP</div>
+                        <p class="fw-bold small mt-2 mb-0">Ana Pinheiro</p>
+                        <small class="text-muted" style="font-size: 0.75rem;">Tá Bonito</small>
+                    </div>
+                    <div style="min-width: 110px;" onclick="openDetail('programa', 'ana-ines')">
+                        <div class="cara-avatar">IA</div>
+                        <p class="fw-bold small mt-2 mb-0">Inês Andrade</p>
+                        <small class="text-muted" style="font-size: 0.75rem;">Tá Bonito</small>
+                    </div>
+                    <div style="min-width: 110px;" onclick="navigate('programas', 'grelha')">
+                        <div class="cara-avatar bg-white border-secondary text-secondary"><i class="bi bi-plus-lg"></i></div>
+                        <p class="fw-bold small mt-2 mb-0">Novas Caras</p>
+                        <small class="text-muted" style="font-size: 0.75rem;">Criadores Digitais</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FUNDO: 3. APROFUNDAR E PARTICIPAR (Blocos 7, 8 e 9) -->
+            <div class="row mt-5 g-4">
+                <!-- Bloco 7: Podcasts Rápidos (Mariana, 34 - Episódios com duração visível) -->
+                <div class="col-lg-6">
+                    <div class="section-header">
+                        <span><i class="bi bi-mic-fill text-rfm-red me-2"></i>7. Podcasts Rápidos</span>
+                        <a href="#podcasts-todos" onclick="navigate('podcasts', 'todos')" class="text-rfm-red small text-decoration-none fw-bold">Ver todos &rarr;</a>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="card-rfm p-3 d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <button class="btn btn-rfm-red rounded-circle" onclick="openDetail('podcast', 'cataplana')"><i class="bi bi-play-fill"></i></button>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Cataplana de Paixão — Ep. 42: «O ciúme digital»</h6>
+                                    <small class="text-muted">Ideal para ouvir ao chegar ao trabalho</small>
+                                </div>
+                            </div>
+                            <span class="badge bg-rfm-black rounded-pill px-3 py-2">5 min</span>
+                        </div>
+                        <div class="card-rfm p-3 d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <button class="btn btn-rfm-red rounded-circle" onclick="openDetail('podcast', 'porchat')"><i class="bi bi-play-fill"></i></button>
+                                <div>
+                                    <h6 class="fw-bold mb-0">PorchatGPT — «Inteligência Artificial ou Falta Dela?»</h6>
+                                    <small class="text-muted">Humor rápido para a pausa do café</small>
+                                </div>
+                            </div>
+                            <span class="badge bg-rfm-black rounded-pill px-3 py-2">5 min</span>
+                        </div>
+                        <div class="card-rfm p-3 d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <button class="btn btn-rfm-red rounded-circle" onclick="openDetail('podcast', 'marias-genz')"><i class="bi bi-play-fill"></i></button>
+                                <div>
+                                    <h6 class="fw-bold mb-0">As Marias GenZ — «Dicionário GenZ para Millennials»</h6>
+                                    <small class="text-muted">Tendências e conversa descontraída</small>
+                                </div>
+                            </div>
+                            <span class="badge bg-rfm-black rounded-pill px-3 py-2">6 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloco 8: Bastidores (Atalho de 1 clique da Inês - Página 7) -->
+                <div class="col-lg-6">
+                    <div class="section-header">
+                        <span><i class="bi bi-camera-reels-fill text-rfm-red me-2"></i>8. Bastidores</span>
+                        <a href="#vid-bastidores" onclick="navigate('videos', 'bastidores')" class="text-rfm-red small text-decoration-none fw-bold">Mais bastidores &rarr;</a>
+                    </div>
+                    <div class="video-horizontal p-4 d-flex flex-column justify-content-between" onclick="openDetail('video', 'bastidores-calema')">
+                        <div class="d-flex justify-content-between">
+                            <span class="badge bg-rfm-red">ATALHO 1 CLIQUE · VISTO NO TIKTOK</span>
+                            <span class="badge bg-dark">08:20</span>
+                        </div>
+                        <div class="play-overlay mx-auto"><i class="bi bi-play-fill"></i></div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Bastidores Exclusivos: Entrevista completa aos Calema em estúdio</h5>
+                            <p class="small text-white-50 mb-0">O que aconteceu antes de as câmaras ligarem: ensaio acústico, piadas e perguntas extra.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloco 9: Participa - Votação do Dia e Pedido de Música (Percurso do Diogo - Página 8) -->
+            <div id="bloco-participa" class="mt-5 p-4 rounded-4 bg-rfm-soft border border-danger border-opacity-25">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-8">
+                        <span class="badge bg-rfm-red text-uppercase mb-2">9. Participa · Votação do Dia em Tempo Real</span>
+                        <h5 class="fw-bold mb-1">Qual destas músicas queres ouvir a seguir na RFM?</h5>
+                        <p class="small text-muted mb-3">Vota sem interromper a emissão. O resultado atualiza na hora!</p>
+                        
+                        <div class="row g-2" id="poll-options">
+                            <div class="col-sm-6">
+                                <label class="card-rfm p-3 d-flex align-items-center gap-2 cursor-pointer w-100" style="cursor:pointer;">
+                                    <input class="form-check-input mt-0" type="radio" name="homePoll" value="A" onchange="castVote('A')">
+                                    <span class="fw-bold">Música A: Dua Lipa — Houdini</span>
+                                </label>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="card-rfm p-3 d-flex align-items-center gap-2 cursor-pointer w-100" style="cursor:pointer;">
+                                    <input class="form-check-input mt-0" type="radio" name="homePoll" value="B" onchange="castVote('B')">
+                                    <span class="fw-bold">Música B: Pedro Abrunhosa — Tudo o Que Eu Te Dou</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Resultado em tempo real -->
+                        <div id="poll-results" class="mt-3 d-none bg-white p-3 rounded-3 border">
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span>Dua Lipa — Houdini (<span id="vote-pct-a">58%</span>)</span>
+                                <span>Pedro Abrunhosa (<span id="vote-pct-b">42%</span>)</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div id="vote-bar-a" class="progress-bar bg-rfm-red" style="width: 58%"></div>
+                                <div id="vote-bar-b" class="progress-bar bg-dark" style="width: 42%"></div>
+                            </div>
+                            <small class="text-success fw-semibold d-block mt-2"><i class="bi bi-check-circle-fill me-1"></i>Voto registado! O áudio continua a tocar sem interrupções.</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <button class="btn btn-rfm-dark btn-lg px-4 py-3 w-100" data-bs-toggle="modal" data-bs-target="#pedirMusicaModal">
+                            <i class="bi bi-chat-heart-fill text-rfm-red me-2"></i>PEDIR UMA MÚSICA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================================
+             SECÇÃO 1 DO SITEMAP: OUVIR (Direto e frequências)
+             Subpáginas: Emissão RFM | Frequências | Últimas tocadas
+             ============================================================= -->
+        <section id="view-ouvir" class="spa-view d-none">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <div>
+                    <span class="sitemap-badge text-rfm-red">Nível 1: Ouvir &rsaquo; Direto e frequências</span>
+                    <h2 class="fw-bold mb-0">Ouvir a RFM</h2>
+                </div>
+                <div class="btn-group mt-2 mt-md-0">
+                    <button class="btn btn-outline-dark active" id="tab-btn-ouvir-emissao" onclick="switchSubTab('ouvir', 'emissao')">Emissão RFM</button>
+                    <button class="btn btn-outline-dark" id="tab-btn-ouvir-frequencias" onclick="switchSubTab('ouvir', 'frequencias')">Frequências</button>
+                    <button class="btn btn-outline-dark" id="tab-btn-ouvir-ultimas" onclick="switchSubTab('ouvir', 'ultimas')">Últimas tocadas</button>
+                </div>
+            </div>
+
+            <!-- Subpágina 1.1: Emissão RFM (Nível 3: Rádio em Direto / Web Player Mobile & Desktop) -->
+            <div id="sub-ouvir-emissao" class="sub-view-ouvir">
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="card-rfm p-4 text-center bg-rfm-black text-white">
+                            <span class="badge bg-rfm-red mb-3 px-3 py-2"><span class="pulse-live me-1"></span> EM DIRETO · ESTÚDIO RFM LISBOA</span>
+                            <div class="rounded-4 bg-dark border border-secondary mx-auto mb-3 d-flex flex-column align-items-center justify-content-center" style="width: 220px; height: 220px;">
+                                <i class="bi bi-broadcast-pin display-1 text-rfm-red"></i>
+                                <span class="small text-white-50 mt-2">Sinal Digital HD</span>
+                            </div>
+                            <h3 class="fw-bold mb-1">Coldplay — Viva La Vida</h3>
+                            <p class="text-white-50 mb-3">Com Catarina Figueiredo · 10 Músicas Seguidas</p>
+                            <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+                                <button class="btn btn-outline-light rounded-circle" onclick="toggleAudioPlayer()" title="Reiniciar stream"><i class="bi bi-arrow-counterclockwise"></i></button>
+                                <button class="btn btn-rfm-red rounded-circle p-3 fs-3 lh-1" onclick="toggleAudioPlayer()"><i class="bi bi-pause-fill" id="main-player-icon"></i></button>
+                                <button class="btn btn-outline-light rounded-circle" onclick="shareCurrentPage('Emissão em Direto RFM')" title="Partilhar Direto"><i class="bi bi-share"></i></button>
+                            </div>
+                            <p class="small text-white-50 mb-0">Podes navegar por todo o RFM Hub — o mini-player mantém a emissão sempre ligada.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="card-rfm p-4 bg-rfm-soft h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="fw-bold text-rfm-red text-uppercase"><i class="bi bi-hand-index-thumb me-2"></i>Participação ao lado do Direto</h5>
+                                <p class="small text-muted">Concebido para o Diogo (42 anos): interage enquanto trabalhas em apenas 2 cliques.</p>
+                                <hr>
+                                <h6 class="fw-bold mb-2">Votação da Próxima Música:</h6>
+                                <div class="d-grid gap-2 mb-3">
+                                    <button class="btn btn-light border text-start fw-semibold py-2 px-3" onclick="castVote('A')">🎵 A: Dua Lipa — Houdini</button>
+                                    <button class="btn btn-light border text-start fw-semibold py-2 px-3" onclick="castVote('B')">🎵 B: Pedro Abrunhosa — Tudo o Que Eu Te Dou</button>
+                                </div>
+                                <div id="live-vote-feedback" class="alert alert-success py-2 small d-none">
+                                    Voto contabilizado em tempo real! Dua Lipa lidera com 58%.
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2 mt-3">
+                                <button class="btn btn-rfm-dark py-2" data-bs-toggle="modal" data-bs-target="#pedirMusicaModal">
+                                    <i class="bi bi-mic me-1"></i> PEDIR UMA MÚSICA OU MANDAR ÁUDIO
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subpágina 1.2: Frequências -->
+            <div id="sub-ouvir-frequencias" class="sub-view-ouvir d-none">
+                <div class="card-rfm p-4">
+                    <h4 class="fw-bold mb-3">Frequências FM de Norte a Sul e Ilhas</h4>
+                    <p class="text-muted">No carro ou em casa, sintoniza a RFM na tua região ou liga via a APP</p>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-3"><div class="p-3 bg-light rounded border"><strong>Lisboa e Vale do Tejo:</strong> <span class="badge bg-rfm-red float-end">93.2 FM</span></div></div>
+                        <div class="col-md-3"><div class="p-3 bg-light rounded border"><strong>Porto e Norte:</strong> <span class="badge bg-rfm-red float-end">104.1 FM</span></div></div>
+                        <div class="col-md-3"><div class="p-3 bg-light rounded border"><strong>Coimbra e Centro:</strong> <span class="badge bg-rfm-red float-end">91.7 FM</span></div></div>
+                        <div class="col-md-3"><div class="p-3 bg-light rounded border"><strong>Faro e Algarve:</strong> <span class="badge bg-rfm-red float-end">89.6 FM</span></div></div>
+                        <div class="col-md-3"><div class="p-3 bg-light rounded border"><strong>Braga / Guimarães:</strong> <span class="badge bg-rfm-red float-end">89.7 FM</span></div></div>
+                        <div class="col-md-3"><div class="p-3 bg-light rounded border"><strong>Aveiro / Viseu:</strong> <span class="badge bg-rfm-red float-end">102.8 FM</span></div></div>
+                        <div class="col-md-3"><div class="p-3 bg-light rounded border"><strong>Évora / Alentejo:</strong> <span class="badge bg-rfm-red float-end">100.9 FM</span></div></div>
+                        <div class="col-md-3"><div class="p-3 bg-light rounded border"><strong>Madeira / Açores:</strong> <span class="badge bg-rfm-red float-end">98.0 FM</span></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subpágina 1.3: Últimas tocadas -->
+            <div id="sub-ouvir-ultimas" class="sub-view-ouvir d-none">
+                <div class="card-rfm p-4">
+                    <h4 class="fw-bold mb-3">Últimas Músicas Tocadas na RFM</h4>
+                    <p class="text-muted">Ouviste uma música na rádio e queres guardá-la? Abre diretamente no Spotify.</p>
+                    <div class="list-group">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div><span class="badge bg-rfm-red me-2">AGORA</span> <strong>Coldplay</strong> — Viva La Vida</div>
+                            <button class="btn btn-sm btn-outline-success rounded-pill" onclick="openExternal('Spotify: Coldplay - Viva La Vida')"><i class="bi bi-spotify me-1"></i>Ouvir no Spotify</button>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div><span class="text-muted small me-2">Há 4 min</span> <strong>Calema</strong> — A Nossa Vez</div>
+                            <button class="btn btn-sm btn-outline-success rounded-pill" onclick="openExternal('Spotify: Calema - A Nossa Vez')"><i class="bi bi-spotify me-1"></i>Ouvir no Spotify</button>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div><span class="text-muted small me-2">Há 8 min</span> <strong>The Weeknd</strong> — Blinding Lights</div>
+                            <button class="btn btn-sm btn-outline-success rounded-pill" onclick="openExternal('Spotify: The Weeknd - Blinding Lights')"><i class="bi bi-spotify me-1"></i>Ouvir no Spotify</button>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div><span class="text-muted small me-2">Há 12 min</span> <strong>Diogo Piçarra</strong> — Monarquia</div>
+                            <button class="btn btn-sm btn-outline-success rounded-pill" onclick="openExternal('Spotify: Diogo Piçarra - Monarquia')"><i class="bi bi-spotify me-1"></i>Ouvir no Spotify</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================================
+             SECÇÃO 2 DO SITEMAP: ATUALIDADE (Notícias e passatempos)
+             Subpáginas: Destaques | Mais recentes | Passatempos
+             ============================================================= -->
+        <section id="view-atualidade" class="spa-view d-none">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <div>
+                    <span class="sitemap-badge text-rfm-red">Nível 1: Atualidade &rsaquo; Notícias e passatempos</span>
+                    <h2 class="fw-bold mb-0">Atualidade RFM</h2>
+                </div>
+                <div class="btn-group mt-2 mt-md-0">
+                    <button class="btn btn-outline-dark active" id="tab-btn-atualidade-destaques" onclick="switchSubTab('atualidade', 'destaques')">Destaques</button>
+                    <button class="btn btn-outline-dark" id="tab-btn-atualidade-recentes" onclick="switchSubTab('atualidade', 'recentes')">Mais recentes</button>
+                    <button class="btn btn-outline-dark" id="tab-btn-atualidade-passatempos" onclick="switchSubTab('atualidade', 'passatempos')">Passatempos</button>
+                </div>
+            </div>
+
+            <!-- Subpágina 2.1: Destaques -->
+            <div id="sub-atualidade-destaques" class="sub-view-atualidade">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <span class="badge bg-rfm-red mb-2">Destaque Música</span>
+                                <h4 class="fw-bold">Coldplay anunciam transmissão especial com a RFM para os ouvintes portugueses</h4>
+                                <p class="text-muted">Uma sessão acústica exclusiva com perguntas enviadas através do RFM Hub.</p>
+                            </div>
+                            <button class="btn btn-outline-dark align-self-start" onclick="openDetail('artigo', 'coldplay-especial')">Ler Artigo Completo &rarr;</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <span class="badge bg-dark mb-2">Tendências</span>
+                                <h4 class="fw-bold">As 10 músicas que não saem do TikTok esta semana (e já tocam na RFM)</h4>
+                                <p class="text-muted">Do estúdio para o teu feed: descobre os sons virais comentados pelas Caras RFM.</p>
+                            </div>
+                            <button class="btn btn-outline-dark align-self-start" onclick="openDetail('artigo', 'tiktok-hits')">Ler Artigo Completo &rarr;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subpágina 2.2: Mais recentes -->
+            <div id="sub-atualidade-recentes" class="sub-view-atualidade d-none">
+                <div class="list-group">
+                    <a href="#artigo" onclick="openDetail('artigo', 'coldplay-especial')" class="list-group-item list-group-item-action p-3">
+                        <div class="d-flex justify-content-between"><h6 class="fw-bold mb-1">Novo álbum de Dua Lipa bate recordes de streaming em Portugal</h6><small class="text-muted">Hoje, 11:30</small></div>
+                        <p class="small text-muted mb-0">Clica para ler a notícia de detalhe (Nível 3).</p>
+                    </a>
+                    <a href="#artigo" onclick="openDetail('artigo', 'tiktok-hits')" class="list-group-item list-group-item-action p-3">
+                        <div class="d-flex justify-content-between"><h6 class="fw-bold mb-1">Café da Manhã leva estúdio móvel às universidades na próxima semana</h6><small class="text-muted">Ontem</small></div>
+                        <p class="small text-muted mb-0">Descobre onde vão estar o Rodrigo Gomes, a Joana Cruz e o Daniel Fontoura.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Subpágina 2.3: Passatempos -->
+            <div id="sub-atualidade-passatempos" class="sub-view-atualidade d-none">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card-rfm p-4 border-danger">
+                            <span class="badge bg-rfm-red mb-2">Passatempo Ativo</span>
+                            <h4 class="fw-bold">Ganha Passes Duplos VIP para o Super Bock em Stock</h4>
+                            <p class="text-muted">Responde à pergunta sobre o clip de bastidores desta semana e habilita-te a ganhar.</p>
+                            <button class="btn btn-rfm-red" onclick="openDetail('artigo', 'passatempo-sbsr')">Participar no Passatempo</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-rfm p-4">
+                            <span class="badge bg-rfm-black mb-2">Em Direto & Digital</span>
+                            <h4 class="fw-bold">Salário RFM —Inscreve-te pelo Hub</h4>
+                            <p class="text-muted">Atende o telefone dizendo «Só grandes músicas na RFM!» e ganha prémios imediatos.</p>
+                            <button class="btn btn-outline-dark" onclick="openDetail('artigo', 'passatempo-salario')">Ver Regulamento e Inscrever</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================================
+             SECÇÃO 3 DO SITEMAP: RÁDIOS & PLAYLISTS (As 10 rádios online)
+             Inclui Percurso do Tomás (19 anos): Playlists para o carro / Spotify / CarPlay
+             ============================================================= -->
+        <section id="view-radios" class="spa-view d-none">
+            <div class="mb-4 pb-2 border-bottom">
+                <span class="sitemap-badge text-rfm-red">Nível 1: Rádios & Playlists &rsaquo; As 10 rádios online e momentos</span>
+                <h2 class="fw-bold mb-1">As 10 Rádios Online & Playlists Para o Teu Momento</h2>
+                <p class="text-muted mb-0">Pensado para o Tomás (19 anos): escolhe o que queres ouvir na estrada, no treino ou no Spotify/CarPlay.</p>
+            </div>
+
+            <!-- As Rádios Online do Sitemap -->
+            <h5 class="section-header">Rádios Digitais RFM (24h Sem Parar)</h5>
+            <div class="row g-3 mb-5">
+                <div class="col-6 col-md-3"><div class="card-rfm p-3 text-center h-100"><span class="badge bg-rfm-red mb-2">NO AR AGORA</span><h6 class="fw-bold">Emissão RFM</h6><button class="btn btn-sm btn-rfm-red mt-2 w-100" onclick="openDetail('radio', 'rfm-direto')">Ouvir Rádio</button></div></div>
+                <div class="col-6 col-md-3"><div class="card-rfm p-3 text-center h-100"><span class="badge bg-dark mb-2">CHILL & JAZZ</span><h6 class="fw-bold">Novas · Jazzy</h6><button class="btn btn-sm btn-outline-dark mt-2 w-100" onclick="openDetail('radio', 'novas-jazzy')">Abrir Página</button></div></div>
+                <div class="col-6 col-md-3"><div class="card-rfm p-3 text-center h-100"><span class="badge bg-dark mb-2">FESTA & RITMO</span><h6 class="fw-bold">Dance It · Latinas</h6><button class="btn btn-sm btn-outline-dark mt-2 w-100" onclick="openDetail('radio', 'dance-latinas')">Abrir Página</button></div></div>
+                <div class="col-6 col-md-3"><div class="card-rfm p-3 text-center h-100"><span class="badge bg-dark mb-2">CLÁSSICO CALMO</span><h6 class="fw-bold">Oceano Pacífico</h6><button class="btn btn-sm btn-outline-dark mt-2 w-100" onclick="openDetail('radio', 'oceano-pacifico')">Abrir Página</button></div></div>
+                <div class="col-6 col-md-3"><div class="card-rfm p-3 text-center h-100"><span class="badge bg-dark mb-2">MEMÓRIAS</span><h6 class="fw-bold">80's · 90's · 00's</h6><button class="btn btn-sm btn-outline-dark mt-2 w-100" onclick="openDetail('radio', 'decadas')">Abrir Página</button></div></div>
+                <div class="col-6 col-md-3"><div class="card-rfm p-3 text-center h-100"><span class="badge bg-dark mb-2">GUITARRAS</span><h6 class="fw-bold">RFM Rocks</h6><button class="btn btn-sm btn-outline-dark mt-2 w-100" onclick="openDetail('radio', 'rocks')">Abrir Página</button></div></div>
+                <div class="col-6 col-md-3"><div class="card-rfm p-3 text-center h-100"><span class="badge bg-dark mb-2">100% NACIONAL</span><h6 class="fw-bold">Toca Portugal</h6><button class="btn btn-sm btn-outline-dark mt-2 w-100" onclick="openDetail('radio', 'toca-portugal')">Abrir Página</button></div></div>
+                <div class="col-6 col-md-3"><div class="card-rfm p-3 text-center h-100 border-danger"><span class="badge bg-rfm-red mb-2">SPOTIFY & CARPLAY</span><h6 class="fw-bold">Roadtrip Hits</h6><button class="btn btn-sm btn-rfm-red mt-2 w-100" onclick="openDetail('radio', 'roadtrip-hits')">Ver Playlist</button></div></div>
+            </div>
+        </section>
+
+        <!-- =============================================================
+             SECÇÃO 4 DO SITEMAP: PROGRAMAS E CARAS RFM (Grelha e locutores)
+             ============================================================= -->
+        <section id="view-programas" class="spa-view d-none">
+            <div class="mb-4 pb-2 border-bottom">
+                <span class="sitemap-badge text-rfm-red">Nível 1: Programas &rsaquo; Grelha e locutores (Caras RFM)</span>
+                <h2 class="fw-bold mb-1">Programas & Caras RFM</h2>
+                <p class="text-muted mb-0">Os locutores e as novas caras como personalidades digitais, com os seus vídeos e podcasts.</p>
+            </div>
+
+            <h5 class="section-header">Programas em Destaque na Grelha</h5>
+            <div class="row g-3 mb-5">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-rfm p-3 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-rfm-red mb-2">07h00 - 10h00</span>
+                            <h5 class="fw-bold">Café da Manhã</h5>
+                            <p class="small text-muted">Humor, atualidade e boa disposição logo cedo com Joana Cruz, Rodrigo Gomes e Daniel Fontoura.</p>
+                        </div>
+                        <button class="btn btn-outline-dark btn-sm w-100" onclick="openDetail('programa', 'cafe-da-manha')">Página de Programa</button>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-rfm p-3 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2">10h00 - 16h00</span>
+                            <h5 class="fw-bold">10 Músicas Seguidas</h5>
+                            <p class="small text-muted">A companhia perfeita para trabalhar, com Catarina Figueiredo e participação interativa.</p>
+                        </div>
+                        <button class="btn btn-outline-dark btn-sm w-100" onclick="openDetail('programa', '10-musicas')">Página de Programa</button>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-rfm p-3 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-rfm-red mb-2">16h00 - 20h00</span>
+                            <h5 class="fw-bold">Tá Bonito</h5>
+                            <p class="small text-muted">Regresso a casa com ritmo, passatempos e conversa com Ana Pinheiro e Inês Andrade.</p>
+                        </div>
+                        <button class="btn btn-outline-dark btn-sm w-100" onclick="openDetail('programa', 'ta-bonito')">Página de Programa</button>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-rfm p-3 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2">22h00 - 01h00</span>
+                            <h5 class="fw-bold">Oceano Pacífico</h5>
+                            <p class="small text-muted">O clássico inconfundível da rádio portuguesa para relaxar ao final do dia.</p>
+                        </div>
+                        <button class="btn btn-outline-dark btn-sm w-100" onclick="openDetail('programa', 'oceano-prog')">Página de Programa</button>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="section-header">Caras RFM (Locutores e Criadores Digitais)</h5>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="card-rfm p-3 text-center">
+                        <div class="cara-avatar mb-2">DF</div>
+                        <h6 class="fw-bold mb-1">Daniel Fontoura</h6>
+                        <p class="small text-muted">Café da Manhã & Clips TikTok</p>
+                        <button class="btn btn-sm btn-rfm-red w-100" onclick="openDetail('programa', 'daniel-fontoura')">Ver Perfil Digital</button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card-rfm p-3 text-center">
+                        <div class="cara-avatar mb-2">JR</div>
+                        <h6 class="fw-bold mb-1">Joana Cruz e R. Gomes</h6>
+                        <p class="small text-muted">Dupla icónica das manhãs</p>
+                        <button class="btn btn-sm btn-rfm-red w-100" onclick="openDetail('programa', 'joana-rodrigo')">Ver Perfil Digital</button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card-rfm p-3 text-center">
+                        <div class="cara-avatar mb-2">CF</div>
+                        <h6 class="fw-bold mb-1">Catarina Figueiredo</h6>
+                        <p class="small text-muted">10 Músicas Seguidas & Top 25</p>
+                        <button class="btn btn-sm btn-rfm-red w-100" onclick="openDetail('programa', 'catarina-figueiredo')">Ver Perfil Digital</button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card-rfm p-3 text-center">
+                        <div class="cara-avatar mb-2">AI</div>
+                        <h6 class="fw-bold mb-1">Ana Pinheiro e I. Andrade</h6>
+                        <p class="small text-muted">Tá Bonito & Videocasts</p>
+                        <button class="btn btn-sm btn-rfm-red w-100" onclick="openDetail('programa', 'ana-ines')">Ver Perfil Digital</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================================
+             SECÇÃO 5 DO SITEMAP: PODCASTS (Séries e episódios)
+             Inclui Percurso da Mariana (34 anos): Episódios rápidos com duração
+             ============================================================= -->
+        <section id="view-podcasts" class="spa-view d-none">
+            <div class="mb-4 pb-2 border-bottom">
+                <span class="sitemap-badge text-rfm-red">Nível 1: Podcasts &rsaquo; Séries e episódios</span>
+                <h2 class="fw-bold mb-1">Podcasts RFM</h2>
+                <p class="text-muted mb-0">Pensado para a Mariana (34 anos): quando sais do carro e chegas ao trabalho, continua ligada com episódios curtos.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-rfm-red mb-2">5 min · Rápido</span>
+                            <h5 class="fw-bold">Cataplana de Paixão</h5>
+                            <p class="small text-muted">Dilemas amorosos, conselhos improváveis e muito humor logo pela manhã.</p>
+                        </div>
+                        <button class="btn btn-rfm-dark w-100" onclick="openDetail('podcast', 'cataplana')">Ouvir Episódios</button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2">15 min · Conversa</span>
+                            <h5 class="fw-bold">Ninguém POD Comigo</h5>
+                            <p class="small text-muted">Conversas sem filtro sobre os temas que marcam a semana nas redes sociais.</p>
+                        </div>
+                        <button class="btn btn-rfm-dark w-100" onclick="openDetail('podcast', 'ninguem-pod')">Ouvir Episódios</button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-rfm-red mb-2">5 min · Humor</span>
+                            <h5 class="fw-bold">PorchatGPT</h5>
+                            <p class="small text-muted">Fábio Porchat responde às dúvidas mais absurdas dos ouvintes da RFM.</p>
+                        </div>
+                        <button class="btn btn-rfm-dark w-100" onclick="openDetail('podcast', 'porchat')">Ouvir Episódios</button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2">6 min · GenZ</span>
+                            <h5 class="fw-bold">As Marias GenZ</h5>
+                            <p class="small text-muted">O olhar da nova geração da RFM sobre música, cultura pop e choques geracionais.</p>
+                        </div>
+                        <button class="btn btn-rfm-dark w-100" onclick="openDetail('podcast', 'marias-genz')">Ouvir Episódios</button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2">20 min · Videocast</span>
+                            <h5 class="fw-bold">Falar Demais</h5>
+                            <p class="small text-muted">O podcast que também se vê: bastidores da rádio e convidados especiais.</p>
+                        </div>
+                        <button class="btn btn-rfm-dark w-100" onclick="openDetail('podcast', 'falar-demais')">Ouvir Episódios</button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-rfm-red mb-2">Resumo Musical</span>
+                            <h5 class="fw-bold">Top 25 RFM</h5>
+                            <p class="small text-muted">A contagem decrescente das músicas mais votadas pelos ouvintes durante a semana.</p>
+                        </div>
+                        <button class="btn btn-rfm-dark w-100" onclick="openDetail('podcast', 'top25')">Ouvir Episódios</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================================
+             SECÇÃO 6 DO SITEMAP: VÍDEOS (Entrevistas e programas)
+             Inclui Percurso da Inês (26 anos): Separadores Humor, Bastidores, etc.
+             ============================================================= -->
+        <section id="view-videos" class="spa-view d-none">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <div>
+                    <span class="sitemap-badge text-rfm-red">Nível 1: Vídeos &rsaquo; Entrevistas, humor e bastidores</span>
+                    <h2 class="fw-bold mb-0">Vídeos RFM</h2>
+                </div>
+                <!-- Separadores definidos na Página 7 do PDF -->
+                <div class="btn-group mt-2 mt-md-0 flex-wrap">
+                    <button class="btn btn-outline-dark active" id="tab-btn-videos-ultimos" onclick="switchSubTab('videos', 'ultimos')">Últimos vídeos (Humor & Clips)</button>
+                    <button class="btn btn-outline-dark" id="tab-btn-videos-bastidores" onclick="switchSubTab('videos', 'bastidores')">Bastidores</button>
+                    <button class="btn btn-outline-dark" id="tab-btn-videos-que-musica" onclick="switchSubTab('videos', 'que-musica')">Que música era?</button>
+                    <button class="btn btn-outline-dark" id="tab-btn-videos-falar-demais" onclick="switchSubTab('videos', 'falar-demais')">Falar Demais (Videocasts)</button>
+                </div>
+            </div>
+
+            <div class="alert alert-light border small mb-4">
+                <i class="bi bi-info-circle-fill text-rfm-red me-1"></i>
+                <strong>Percurso da Inês (26 anos):</strong> Viste um clip curto no TikTok ou Instagram? Escolhe o separador <strong>«Bastidores»</strong> para veres o que aconteceu em estúdio antes e depois!
+            </div>
+
+            <!-- Grelha de Cartões de Vídeo filtrada pela categoria -->
+            <div class="row g-4" id="videos-grid-container">
+                <!-- Preenchido via JS consoante o separador ativo -->
+            </div>
+        </section>
+
+        <!-- =============================================================
+             SECÇÃO 7 DO SITEMAP: EVENTOS (Concertos e bilhetes)
+             ============================================================= -->
+        <section id="view-eventos" class="spa-view d-none">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <div>
+                    <span class="sitemap-badge text-rfm-red">Nível 1: Eventos &rsaquo; Concertos e bilhetes</span>
+                    <h2 class="fw-bold mb-0">Eventos & Concertos Com a RFM</h2>
+                </div>
+                <div class="btn-group mt-2 mt-md-0">
+                    <button class="btn btn-outline-dark active" id="tab-btn-eventos-proximos" onclick="switchSubTab('eventos', 'proximos')">Próximos eventos</button>
+                    <button class="btn btn-outline-dark" id="tab-btn-eventos-ganha-bilhetes" onclick="switchSubTab('eventos', 'ganha-bilhetes')">Ganha bilhetes</button>
+                </div>
+            </div>
+
+            <div id="sub-eventos-proximos" class="sub-view-eventos">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <span class="badge bg-rfm-red mb-2">Evento Oficial RFM</span>
+                                <h4 class="fw-bold">Que Grandioso Espetáculo...</h4>
+                                <p class="text-muted">O espetáculo ao vivo que junta as Caras RFM, convidados surpresa, música e comédia num palco único.</p>
+                            </div>
+                            <button class="btn btn-rfm-dark" onclick="openDetail('evento', 'grandioso')">Ver Página do Evento & Bilhetes</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-rfm p-4 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <span class="badge bg-dark mb-2">Festival · Rádio Oficial</span>
+                                <h4 class="fw-bold">Super Bock em Stock</h4>
+                                <p class="text-muted">A Avenida da Liberdade transforma-se na casa da música descoberta pela RFM.</p>
+                            </div>
+                            <button class="btn btn-rfm-dark" onclick="openDetail('evento', 'super-bock')">Ver Página do Evento & Cartaz</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sub-eventos-ganha-bilhetes" class="sub-view-eventos d-none">
+                <div class="card-rfm p-4 bg-rfm-soft border-danger">
+                    <h4 class="fw-bold text-rfm-red">Queres ir aos melhores concertos à borla com a RFM?</h4>
+                    <p>Participa diretamente aqui no Hub sem teres de esperar ao telefone.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-rfm-red" onclick="openDetail('evento', 'grandioso')">Pedir Convite: Que Grandioso Espetáculo</button>
+                        <button class="btn btn-outline-dark" onclick="openDetail('evento', 'super-bock')">Passatempo: Super Bock em Stock</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================================
+             SECÇÃO 8 DO SITEMAP: A RFM (Institucional - 7 Subpáginas)
+             ============================================================= -->
+        <section id="view-arfm" class="spa-view d-none">
+            <div class="mb-4 pb-2 border-bottom">
+                <span class="sitemap-badge text-rfm-red">Nível 1: A RFM &rsaquo; Institucional (Nível 2 e 3: Texto / Formulário)</span>
+                <h2 class="fw-bold mb-2">Sobre a RFM</h2>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-sm btn-outline-dark active" id="tab-btn-arfm-historia" onclick="switchSubTab('arfm', 'historia')">A nossa história</button>
+                    <button class="btn btn-sm btn-outline-dark" id="tab-btn-arfm-newsletter" onclick="switchSubTab('arfm', 'newsletter')">Newsletter</button>
+                    <button class="btn btn-sm btn-outline-dark" id="tab-btn-arfm-notificacoes" onclick="switchSubTab('arfm', 'notificacoes')">Notificações</button>
+                    <button class="btn btn-sm btn-outline-dark" id="tab-btn-arfm-contactos" onclick="switchSubTab('arfm', 'contactos')">Contactos</button>
+                    <button class="btn btn-sm btn-outline-dark" id="tab-btn-arfm-publicidade" onclick="switchSubTab('arfm', 'publicidade')">Publicidade</button>
+                    <button class="btn btn-sm btn-outline-dark" id="tab-btn-arfm-carreiras" onclick="switchSubTab('arfm', 'carreiras')">Carreiras</button>
+                    <button class="btn btn-sm btn-outline-dark" id="tab-btn-arfm-transparencia" onclick="switchSubTab('arfm', 'transparencia')">Transparência</button>
+                </div>
+            </div>
+
+            <div id="arfm-content-box" class="card-rfm p-4">
+                <!-- Preenchido via JS para cada uma das 7 subpáginas institucionais -->
+            </div>
+        </section>
+
+        <!-- =============================================================
+             NÍVEL 3: PÁGINAS DE DETALHE DINÂMICAS
+             (Vídeo, Podcast, Rádio/Playlist, Programa, Artigo/Passatempo, Evento)
+             ============================================================= -->
+        <section id="view-detail" class="spa-view d-none">
+            <div id="detail-dynamic-container">
+                <!-- Conteúdo injetado dinamicamente conforme o item clicado -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =================================================================
+         BLOCO 10: RODAPÉ (Fecha o ciclo do ecossistema circular)
+         ================================================================= -->
+    <footer class="bg-rfm-black text-white pt-5 pb-5 mt-5">
+        <div class="container">
+            <div class="row g-4 align-items-center">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-rfm-red fs-5 px-3 py-2">RFM HUB</span>
+                        <span class="small text-white-50">Digital First, Not Digital Only</span>
+                    </div>
+                    <p class="small text-white-50 mb-2">Segue a RFM nas redes — o conteúdo nasce aqui e circula consigo:</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-light btn-sm rounded-3 px-3" onclick="openExternal('TikTok Oficial RFM')"><i class="bi bi-tiktok me-1"></i>TT</button>
+                        <button class="btn btn-outline-light btn-sm rounded-3 px-3" onclick="openExternal('Instagram Oficial RFM')"><i class="bi bi-instagram me-1"></i>IG</button>
+                        <button class="btn btn-outline-light btn-sm rounded-3 px-3" onclick="openExternal('YouTube Oficial RFM')"><i class="bi bi-youtube me-1"></i>YT</button>
+                        <button class="btn btn-outline-light btn-sm rounded-3 px-3" onclick="openExternal('Spotify Oficial RFM')"><i class="bi bi-spotify me-1"></i>SP</button>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-center">
+                    <h6 class="fw-bold text-uppercase small text-rfm-red">App</h6>
+                    <p class="small text-white-50 mb-2">Leva as 10 rádios online, os podcasts rápidos e as playlists para o teu carro.</p>
+                    <button class="btn btn-sm btn-light fw-bold rounded-pill px-3" onclick="openExternal('Guia de ligação App RFM & Apple CarPlay / Android Auto')">
+                        <i class="bi bi-car-front-fill me-1"></i> Ligação App
+                    </button>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <ul class="list-inline mb-2 small">
+                        <li class="list-inline-item"><a href="#rfm-historia" onclick="navigate('arfm', 'historia')" class="text-white-50 text-decoration-none">Sobre a RFM</a></li>
+                        <li class="list-inline-item text-white-50">·</li>
+                        <li class="list-inline-item"><a href="#rfm-contactos" onclick="navigate('arfm', 'contactos')" class="text-white-50 text-decoration-none">Contactos</a></li>
+                        <li class="list-inline-item text-white-50">·</li>
+                        <li class="list-inline-item"><a href="#rfm-publicidade" onclick="navigate('arfm', 'publicidade')" class="text-white-50 text-decoration-none">Publicidade</a></li>
+                        <li class="list-inline-item text-white-50">·</li>
+                        <li class="list-inline-item"><a href="#rfm-transparencia" onclick="navigate('arfm', 'transparencia')" class="text-white-50 text-decoration-none">Transparência</a></li>
+                    </ul>
+                    <small class="text-white-50 d-block">Laboratório de Comunicação Digital · Semana 6 · RFM Hub</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =================================================================
+         BLOCO 11: MINI-PLAYER FIXO (Sempre visível em todas as páginas)
+         ================================================================= -->
+    <div class="mini-player">
+        <div class="container d-flex align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-rfm-black text-white rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; cursor:pointer;" onclick="navigate('ouvir', 'emissao')">
+                    <i class="bi bi-soundwave fs-4 text-rfm-red"></i>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="pulse-live" id="mini-player-dot"></span>
+                        <span class="fw-bold small" id="mini-player-status">EM DIRETO · RFM</span>
+                        <span class="badge bg-light text-dark border d-none d-sm-inline" id="mini-player-program">10 Músicas Seguidas</span>
+                    </div>
+                    <div class="small text-muted text-truncate" style="max-width: 260px;" id="mini-player-track">
+                        Coldplay — Viva La Vida
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-danger rounded-pill d-none d-md-inline-block fw-semibold" onclick="navigate('ouvir', 'emissao')">
+                    Votar / Pedir Música
+                </button>
+                <button class="btn btn-rfm-red rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 48px; height: 48px;" onclick="toggleAudioPlayer()" title="Reproduzir / Pausar Rádio">
+                    <i class="bi bi-pause-fill fs-4" id="mini-player-btn-icon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================================
+         MODALS: PESQUISA GLOBAL E PEDIR UMA MÚSICA
+         ================================================================= -->
+    <!-- Modal de Pesquisa -->
+    <div class="modal fade" id="searchModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-rfm-black text-white">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-search me-2 text-rfm-red"></i>Pesquisar no RFM Hub</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="input-group mb-3">
+                        <input type="text" id="globalSearchInput" class="form-control form-control-lg" placeholder="Ex.: Bastidores, Roadtrip, Porchat, Café da Manhã...">
+                        <button class="btn btn-rfm-red" onclick="executeSearch(document.getElementById('globalSearchInput').value)">Procurar</button>
+                    </div>
+                    <p class="small text-muted mb-2">Sugestões rápidas (a menos de 3 cliques):</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-sm btn-light border" data-bs-dismiss="modal" onclick="openDetail('video', 'bastidores-calema')">Bastidores Calema</button>
+                        <button class="btn btn-sm btn-light border" data-bs-dismiss="modal" onclick="openDetail('radio', 'roadtrip-hits')">Playlist Roadtrip Hits</button>
+                        <button class="btn btn-sm btn-light border" data-bs-dismiss="modal" onclick="openDetail('podcast', 'cataplana')">Cataplana de Paixão</button>
+                        <button class="btn btn-sm btn-light border" data-bs-dismiss="modal" onclick="navigate('ouvir', 'frequencias')">Frequências FM</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pedir uma Música -->
+    <div class="modal fade" id="pedirMusicaModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-rfm-red text-white">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-music-note-beamed me-2"></i>Pedir uma Música em Direto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form onsubmit="event.preventDefault(); submitMusicRequest();">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">O teu nome</label>
+                            <input type="text" class="form-control" required placeholder="Ex.: Diogo">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Qual é a música e o artista?</label>
+                            <input type="text" class="form-control" required placeholder="Ex.: U2 - Beautiful Day">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Dedicatória ou mensagem para o locutor (opcional)</label>
+                            <textarea class="form-control" rows="2" placeholder="Estou a ouvir enquanto trabalho!"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-rfm-dark w-100 py-2">ENVIAR PEDIDO PARA O ESTÚDIO</button>
+                    </form>
+                    <div id="music-request-alert" class="alert alert-success mt-3 mb-0 d-none small">
+                        <i class="bi bi-check-circle-fill me-1"></i> Pedido enviado para o estúdio da RFM! Fica atento à emissão.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast para Feedback de Ações (Spotify, YouTube, Partilha) -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="margin-bottom: 75px;">
+        <div id="rfmToast" class="toast align-items-center text-bg-dark border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="rfmToastText">Ação realizada com sucesso!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================================
+         JAVASCRIPT VANILLA: GESTÃO DE ESTADO, ROTAS E DADOS DO SITEMAP
+         ================================================================= -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Estado do Mini-Player (A rádio começa ativa por defeito)
+        let isRadioPlaying = true;
+
+        // 1. Dados para o Bloco 4: "Para o teu momento" (Percurso do Tomás)
+        const momentsData = {
+            carro: [
+                { id: 'roadtrip-hits', title: 'Roadtrip Hits', subtitle: 'As melhores para cantar na estrada (Spotify & CarPlay)', badge: 'No Carro #1' },
+                { id: 'rfm-direto', title: 'Emissão RFM em Direto', subtitle: 'Companhia em tempo real com trânsito e humor', badge: 'Direto' },
+                { id: 'rocks', title: 'RFM Rocks na Autoestrada', subtitle: 'Clássicos de guitarra para viagens longas', badge: 'Rádio Online' },
+                { id: 'toca-portugal', title: 'Toca Portugal', subtitle: 'Vozes portuguesas para cantar do início ao fim', badge: '100% PT' }
+            ],
+            trabalhar: [
+                { id: 'novas-jazzy', title: 'Novas · Jazzy Focus', subtitle: 'Ritmos suaves para manter a concentração no escritório', badge: 'Foco' },
+                { id: 'decadas', title: '80\'s · 90\'s · 00\'s', subtitle: 'As músicas que conheces de cor enquanto trabalhas', badge: 'Clássicos' },
+                { id: 'oceano-pacifico', title: 'Oceano Pacífico Instrumental', subtitle: 'Zero distrações, máxima tranquilidade', badge: 'Calmo' },
+                { id: 'rfm-direto', title: '10 Músicas Seguidas', subtitle: 'Mais música e votações rápidas em 2 cliques', badge: 'No Ar' }
+            ],
+            treinar: [
+                { id: 'dance-latinas', title: 'Dance It · Power Workout', subtitle: 'BPM elevado para ginásio ou corrida', badge: 'Energia' },
+                { id: 'roadtrip-hits', title: 'Cardio Pop Hits', subtitle: 'Os maiores sucessos atuais sem paragens', badge: 'Pop' },
+                { id: 'rocks', title: 'Rock Adrenaline', subtitle: 'Riffs pesados para superar limites', badge: 'Rock' },
+                { id: 'dance-latinas', title: 'Ritmos Latinos', subtitle: 'Energia positiva do princípio ao fim', badge: 'Latino' }
+            ],
+            noite: [
+                { id: 'dance-latinas', title: 'Dance It · Latinas', subtitle: 'O aquecimento perfeito para sair à noite com amigos', badge: 'Festa' },
+                { id: 'decadas', title: '90\'s & 00\'s Party', subtitle: 'Nostalgia garantida na pista de dança', badge: 'Throwback' },
+                { id: 'roadtrip-hits', title: 'Warm-Up RFM', subtitle: 'Os hits que estão no topo das pistas', badge: 'Hits' },
+                { id: 'toca-portugal', title: 'Festa Portuguesa', subtitle: 'Os refrões que toda a gente sabe cantar', badge: 'PT Hits' }
+            ],
+            relaxar: [
+                { id: 'oceano-pacifico', title: 'Oceano Pacífico', subtitle: 'A histórica seleção de baladas da RFM', badge: 'Ícone' },
+                { id: 'novas-jazzy', title: 'Novas · Jazzy Sunset', subtitle: 'Final de tarde descontraído', badge: 'Jazz & Soul' },
+                { id: 'toca-portugal', title: 'Acústico Português', subtitle: 'Versões intimistas de grandes temas nacionais', badge: 'Acústico' },
+                { id: 'decadas', title: 'Slow Classics 80\'s & 90\'s', subtitle: 'Grandes canções intemporais', badge: 'Relax' }
+            ]
+        };
+
+        // 2. Dados de Vídeos (Secção 6 e Percurso da Inês)
+        const videosCatalog = [
+            { id: 'bastidores-calema', category: 'bastidores', title: 'Bastidores: Entrevista completa aos Calema (Clip do TikTok)', guest: 'Calema & Joana Cruz', duration: '08:20', badge: 'Bastidores' },
+            { id: 'bastidores-cafe', category: 'bastidores', title: 'O que acontece às 06h45 antes do Café da Manhã abrir o microfone', guest: 'Equipa Café da Manhã', duration: '04:15', badge: 'Bastidores' },
+            { id: 'porchat-cafe', category: 'ultimos', title: 'Fábio Porchat improvisa trocadilhos em direto!', guest: 'Fábio Porchat', duration: '03:45', badge: 'Humor e Clips' },
+            { id: 'que-musica-clip1', category: 'que-musica', title: 'Que música era? Desafio de 2 segundos com Rodrigo Gomes', guest: 'Rodrigo Gomes & Joana Cruz', duration: '02:50', badge: 'Que música era?' },
+            { id: 'falar-demais-clip', category: 'falar-demais', title: 'Falar Demais #18 — «Os áudios de 7 minutos deviam dar multa»', guest: 'Ana Pinheiro e Inês Andrade', duration: '21:10', badge: 'Videocast' }
+        ];
+
+        // 3. Conteúdos Institucionais (Secção 8: A RFM)
+        const arfmPages = {
+            historia: {
+                title: 'A Nossa História — De Rádio Líder a Ecossistema Digital First',
+                body: `<p>Há décadas que a RFM acompanha os portugueses com a promessa de grandes músicas, humor e boa disposição. Com o <strong>RFM Hub</strong>, damos o passo <em>Digital First, Not Digital Only</em>: a rádio continua no centro, mas liga-se em ciclo contínuo ao TikTok, Instagram, YouTube e Spotify.</p>
+                       <p class="mb-0">Seja no carro em FM/CarPlay, no trabalho através do Web Player interativo ou no telemóvel em formato vertical, a RFM adapta-se à rotina de cada geração (Millennials, Gen Z e todos os que gostam de boa música).</p>`
+            },
+            newsletter: {
+                title: 'Subscreve a Newsletter RFM Hub',
+                body: `<p>Recebe à sexta-feira os melhores clips de humor da semana, a playlist para o fim de semana e alertas de passatempos.</p>
+                       <form class="row g-2" onsubmit="event.preventDefault(); showToast('Subscrição da Newsletter confirmada!');">
+                           <div class="col-md-8"><input type="email" class="form-control" required placeholder="O teu melhor e-mail"></div>
+                           <div class="col-md-4"><button class="btn btn-rfm-red w-100" type="submit">Subscrever Agora</button></div>
+                       </form>`
+            },
+            notificacoes: {
+                title: 'Configurar Notificações Personalizadas',
+                body: `<p>Escolhe apenas os alertas que te interessam receber no navegador ou na App:</p>
+                       <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" checked id="n1"><label class="form-check-label" for="n1">Avisar quando começar o Café da Manhã</label></div>
+                       <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" checked id="n2"><label class="form-check-label" for="n2">Novos episódios de Podcasts Rápidos (5 min)</label></div>
+                       <div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" id="n3"><label class="form-check-label" for="n3">Abertura de passatempos e oferta de bilhetes</label></div>
+                       <button class="btn btn-rfm-dark btn-sm" onclick="showToast('Preferências de notificações guardadas!')">Guardar Preferências</button>`
+            },
+            contactos: {
+                title: 'Contactos RFM',
+                body: `<p><strong>Estúdios e Redação:</strong> Rua Ivens, 14, 1249-108 Lisboa | Linha do Ouvinte e WhatsApp: <strong>91 333 00 00</strong></p>
+                       <form onsubmit="event.preventDefault(); showToast('Mensagem enviada à equipa RFM!');">
+                           <div class="mb-2"><input type="text" class="form-control" required placeholder="O teu nome"></div>
+                           <div class="mb-2"><input type="email" class="form-control" required placeholder="O teu e-mail"></div>
+                           <div class="mb-2"><textarea class="form-control" rows="3" required placeholder="A tua mensagem ou sugestão"></textarea></div>
+                           <button class="btn btn-rfm-red" type="submit">Enviar Mensagem</button>
+                       </form>`
+            },
+            publicidade: {
+                title: 'Publicidade e Branded Content no Ecossistema RFM',
+                body: `<p>Junte a sua marca à rádio, aos podcasts, às playlists temáticas e aos vídeos das Caras RFM. Peça o nosso Media Kit Digital First.</p>
+                       <button class="btn btn-rfm-red" onclick="showToast('Media Kit RFM descarregado!')">Descarregar Media Kit (PDF)</button>`
+            },
+            carreiras: {
+                title: 'Carreiras e Estágios — Junta-te às Novas Caras RFM',
+                body: `<p>Procuramos criadores de conteúdo digital, produtores de áudio, editores de vídeo vertical e talentos de comunicação.</p>
+                       <button class="btn btn-rfm-dark" onclick="showToast('Formulário de candidatura aberto!')">Enviar Candidatura Espontânea</button>`
+            },
+            transparencia: {
+                title: 'Transparência e Ficha Técnica',
+                body: `<p>Informação institucional, regulação ERC, estatuto editorial e política de privacidade do Grupo Renascença Multimédia / RFM.</p>
+                       <p class="small text-muted mb-0">Projeto académico desenvolvido no âmbito do Laboratório de Comunicação Digital (Semana 6) por Diana Oliveira, Joana Branco, Madalena Matos, Mariana Mota e Mário Santos.</p>`
+            }
+        };
+
+        // Renderizar Bloco 4 (Para o teu momento)
+        function filterMoments(momentKey, btnElement) {
+            if (btnElement) {
+                document.querySelectorAll('#moment-filters button').forEach(b => {
+                    b.classList.remove('btn-dark');
+                    b.classList.add('btn-outline-dark');
+                });
+                btnElement.classList.remove('btn-outline-dark');
+                btnElement.classList.add('btn-dark');
+            }
+            const list = momentsData[momentKey] || momentsData.carro;
+            const container = document.getElementById('moment-cards-container');
+            container.innerHTML = list.map(item => `
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card-rfm p-3 h-100 d-flex flex-column justify-content-between" style="cursor:pointer;" onclick="openDetail('radio', '${item.id}')">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-rfm-red">${item.badge}</span>
+                                <i class="bi bi-spotify text-success fs-5"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1">${item.title}</h6>
+                            <p class="small text-muted mb-3">${item.subtitle}</p>
+                        </div>
+                        <span class="small fw-bold text-rfm-red">Abrir Playlist / Rádio &rarr;</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Navegação Principal da SPA (Nível 1 e Nível 2)
+        function navigate(section, subSection = null) {
+            document.querySelectorAll('.spa-view').forEach(v => v.classList.add('d-none'));
+            const target = document.getElementById('view-' + section);
+            if (target) {
+                target.classList.remove('d-none');
+            }
+
+            if (section === 'ouvir' && subSection) switchSubTab('ouvir', subSection);
+            if (section === 'atualidade' && subSection) switchSubTab('atualidade', subSection);
+            if (section === 'videos') switchSubTab('videos', subSection || 'ultimos');
+            if (section === 'eventos' && subSection) switchSubTab('eventos', subSection);
+            if (section === 'arfm') switchSubTab('arfm', subSection || 'historia');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Alternar Sub-separadores de Nível 2
+        function switchSubTab(section, subKey) {
+            if (section === 'videos') {
+                document.querySelectorAll('[id^="tab-btn-videos-"]').forEach(b => b.classList.remove('active'));
+                const activeBtn = document.getElementById('tab-btn-videos-' + subKey);
+                if (activeBtn) activeBtn.classList.add('active');
+
+                const filtered = subKey === 'ultimos'
+                    ? videosCatalog
+                    : videosCatalog.filter(v => v.category === subKey);
+
+                document.getElementById('videos-grid-container').innerHTML = filtered.map(v => `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card-rfm h-100 d-flex flex-column justify-content-between p-3">
+                            <div>
+                                <div class="video-horizontal mb-3 d-flex align-items-center justify-content-center" onclick="openDetail('video', '${v.id}')">
+                                    <div class="play-overlay"><i class="bi bi-play-fill"></i></div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-rfm-red">${v.badge}</span>
+                                    <small class="text-muted fw-bold"><i class="bi bi-clock me-1"></i>${v.duration}</small>
+                                </div>
+                                <h5 class="fw-bold">${v.title}</h5>
+                                <p class="small text-muted">Com: ${v.guest}</p>
+                            </div>
+                            <button class="btn btn-outline-dark w-100 mt-2" onclick="openDetail('video', '${v.id}')">Ver Vídeo Completo</button>
+                        </div>
+                    </div>
+                `).join('');
+                return;
+            }
+
+            if (section === 'arfm') {
+                document.querySelectorAll('[id^="tab-btn-arfm-"]').forEach(b => b.classList.remove('active'));
+                const btn = document.getElementById('tab-btn-arfm-' + subKey);
+                if (btn) btn.classList.add('active');
+                const data = arfmPages[subKey] || arfmPages.historia;
+                document.getElementById('arfm-content-box').innerHTML = `
+                    <span class="badge bg-rfm-black mb-2">Nível 3 · Página Institucional / Formulário</span>
+                    <h4 class="fw-bold mb-3">${data.title}</h4>
+                    ${data.body}
+                `;
+                return;
+            }
+
+            // Ouvir, Atualidade, Eventos
+            document.querySelectorAll(`.sub-view-${section}`).forEach(el => el.classList.add('d-none'));
+            const subTarget = document.getElementById(`sub-${section}-${subKey}`);
+            if (subTarget) subTarget.classList.remove('d-none');
+
+            document.querySelectorAll(`[id^="tab-btn-${section}-"]`).forEach(b => b.classList.remove('active'));
+            const activeTabBtn = document.getElementById(`tab-btn-${section}-${subKey}`);
+            if (activeTabBtn) activeTabBtn.classList.add('active');
+        }
+
+        // NÍVEL 3: Abrir Páginas de Detalhe (Cumpre regra dos <= 3 cliques e fecha o ciclo)
+        function openDetail(type, itemId) {
+            document.querySelectorAll('.spa-view').forEach(v => v.classList.add('d-none'));
+            const detailView = document.getElementById('view-detail');
+            detailView.classList.remove('d-none');
+            const container = document.getElementById('detail-dynamic-container');
+
+            if (type === 'video') {
+                // Ponto de atenção da Página 7: O direto pausa sozinho ao começar o vídeo!
+                if (isRadioPlaying) {
+                    toggleAudioPlayer(false);
+                    showToast('O direto da rádio foi pausado automaticamente para poderes ver o vídeo.');
+                }
+                const videoObj = videosCatalog.find(v => v.id === itemId) || videosCatalog[0];
+                container.innerHTML = `
+                    <div class="mb-3">
+                        <span class="sitemap-badge text-rfm-red">Nível 3 · Página de Vídeo &rsaquo; ${videoObj.badge}</span>
+                        <h2 class="fw-bold mt-1">${videoObj.title}</h2>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-8">
+                            <div class="video-horizontal d-flex flex-column align-items-center justify-content-center p-4 border">
+                                <div class="play-overlay mb-2" onclick="showToast('A reproduzir vídeo completo...')"><i class="bi bi-play-fill"></i></div>
+                                <span class="fw-bold">A reproduzir vídeo completo (${videoObj.duration})</span>
+                                <small class="text-white-50 mt-1">O áudio da rádio em direto foi pausado automaticamente. Usa o mini-player em baixo para voltar à rádio!</small>
+                            </div>
+                            <!-- Passo 5 do Percurso da Inês: Partilhar e continuar (Fecha o ciclo) -->
+                            <div class="card-rfm p-4 mt-3 bg-rfm-soft border-danger">
+                                <h6 class="fw-bold text-rfm-red text-uppercase mb-2">Gostaste deste momento? Fecha o ciclo nas plataformas:</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="btn btn-rfm-red" onclick="openExternal('YouTube: ' + '${videoObj.title}')"><i class="bi bi-youtube me-1"></i>Ver no YouTube</button>
+                                    <button class="btn btn-success fw-bold" onclick="openExternal('Spotify: Playlist do Artista')"><i class="bi bi-spotify me-1"></i>Ouvir a playlist no Spotify</button>
+                                    <button class="btn btn-dark" onclick="shareCurrentPage('${videoObj.title}')"><i class="bi bi-share-fill me-1"></i>Partilhar com amigos</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card-rfm p-4 mb-3">
+                                <h6 class="fw-bold text-uppercase">Quem aparece neste vídeo</h6>
+                                <div class="d-flex align-items-center gap-3 mt-2">
+                                    <div class="cara-avatar m-0" style="width:60px;height:60px;font-size:1rem;">RFM</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0">${videoObj.guest}</h6>
+                                        <small class="text-muted">Caras RFM & Convidados</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-rfm p-4">
+                                <h6 class="fw-bold text-uppercase mb-3">Vídeos Relacionados</h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-light border text-start small" onclick="openDetail('video', 'porchat-cafe')">▶ Fábio Porchat no Café da Manhã (03:45)</button>
+                                    <button class="btn btn-light border text-start small" onclick="openDetail('video', 'que-musica-clip1')">▶ Que música era? Desafio 2s (02:50)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'radio') {
+                // Percurso do Tomás (Página 8): Capa, faixas, Abrir no Spotify e nota CarPlay
+                container.innerHTML = `
+                    <div class="mb-3">
+                        <span class="sitemap-badge text-rfm-red">Nível 3 · Página de Rádio / Playlist</span>
+                        <h2 class="fw-bold mt-1">Playlist & Rádio: ${itemId.toUpperCase().replace('-', ' ')}</h2>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-5">
+                            <div class="card-rfm p-4 text-center bg-rfm-black text-white">
+                                <i class="bi bi-music-note-list display-1 text-rfm-red mb-2"></i>
+                                <h4 class="fw-bold">Roadtrip Hits & Seleção RFM</h4>
+                                <p class="small text-white-50">Atualizada todas as semanas pela equipa musical da RFM.</p>
+                                <div class="d-grid gap-2 mt-3">
+                                    <button class="btn btn-success btn-lg fw-bold" onclick="openExternal('Spotify Playlist RFM')"><i class="bi bi-spotify me-2"></i>ABRIR NO SPOTIFY</button>
+                                    <button class="btn btn-rfm-red" onclick="setCustomStream('${itemId.toUpperCase()}')"><i class="bi bi-play-circle me-1"></i>Ouvir Stream Aqui no Hub</button>
+                                </div>
+                            </div>
+                            <div class="alert alert-info mt-3 small mb-0">
+                                <i class="bi bi-car-front-fill me-1"></i><strong>Como ligar ao carro (CarPlay / Android Auto):</strong> Abre esta playlist na App Spotify ou na App RFM e seleciona o ícone de ligação ao veículo no ecrã do teu automóvel.
+                            </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="card-rfm p-4">
+                                <h5 class="fw-bold mb-3">Faixas em Destaque nesta Seleção</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between"><span>1. Coldplay — Adventure of a Lifetime</span><span class="text-muted small">04:23</span></li>
+                                    <li class="list-group-item d-flex justify-content-between"><span>2. Dua Lipa — Levitating</span><span class="text-muted small">03:23</span></li>
+                                    <li class="list-group-item d-flex justify-content-between"><span>3. Calema — Te Amo</span><span class="text-muted small">03:40</span></li>
+                                    <li class="list-group-item d-flex justify-content-between"><span>4. Imagine Dragons — Bones</span><span class="text-muted small">02:45</span></li>
+                                    <li class="list-group-item d-flex justify-content-between"><span>5. Pedro Abrunhosa — Para Os Braços Da Minha Mãe</span><span class="text-muted small">04:12</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'podcast') {
+                // Percurso da Mariana (Página 8): Ouve o episódio curto e "Segue no Spotify"
+                container.innerHTML = `
+                    <div class="mb-3">
+                        <span class="sitemap-badge text-rfm-red">Nível 3 · Página de Podcast</span>
+                        <h2 class="fw-bold mt-1">Podcast: ${itemId.toUpperCase().replace('-', ' ')}</h2>
+                    </div>
+                    <div class="card-rfm p-4 mb-4 bg-rfm-soft border-danger">
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-8">
+                                <span class="badge bg-rfm-red mb-2">EPISÓDIO RÁPIDO · DURAÇÃO: 5 MIN</span>
+                                <h4 class="fw-bold">Episódio de Hoje — Pronto para ouvir ao chegar ao trabalho</h4>
+                                <p class="text-muted mb-3">Carrega em play para ouvir já ou segue o podcast no Spotify para o teres sempre no telemóvel.</p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="btn btn-rfm-red px-4" onclick="showToast('A reproduzir episódio de 5 minutos!')"><i class="bi bi-play-fill me-1"></i>OUVIR EPISÓDIO (5 MIN)</button>
+                                    <button class="btn btn-success fw-bold px-4" onclick="openExternal('Spotify Podcast Follow')"><i class="bi bi-spotify me-1"></i>SEGUIR NO SPOTIFY</button>
+                                    <button class="btn btn-outline-dark" onclick="shareCurrentPage('Podcast RFM')"><i class="bi bi-share me-1"></i>Partilhar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'programa') {
+                container.innerHTML = `
+                    <div class="mb-3">
+                        <span class="sitemap-badge text-rfm-red">Nível 3 · Página de Programa / Cara RFM</span>
+                        <h2 class="fw-bold mt-1">Perfil & Programa: ${itemId.toUpperCase().replace('-', ' ')}</h2>
+                    </div>
+                    <div class="card-rfm p-4">
+                        <p class="lead">Aqui encontras todos os vídeos verticais, bastidores, podcasts rápidos e playlists escolhidas por esta Cara RFM.</p>
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <button class="btn btn-rfm-red" onclick="openDetail('video', 'porchat-cafe')">Ver Último Vídeo</button>
+                            <button class="btn btn-dark" onclick="openDetail('podcast', 'cataplana')">Ouvir Podcast Associado</button>
+                            <button class="btn btn-outline-dark" onclick="openExternal('Instagram Cara RFM')"><i class="bi bi-instagram me-1"></i>Seguir no Instagram & TikTok</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Artigo, Passatempo ou Evento (Nível 3)
+                container.innerHTML = `
+                    <div class="mb-3">
+                        <span class="sitemap-badge text-rfm-red">Nível 3 · Página de Detalhe (${type.toUpperCase()})</span>
+                        <h2 class="fw-bold mt-1">Detalhe: ${itemId.toUpperCase().replace('-', ' ')}</h2>
+                    </div>
+                    <div class="card-rfm p-4">
+                        <p>Conteúdo completo disponível em menos de 3 cliques a partir da Home do RFM Hub, mantendo o mini-player sempre ativo no fundo da página.</p>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-rfm-red" onclick="showToast('Inscrição / Ação confirmada!')">Participar / Garantir Bilhete</button>
+                            <button class="btn btn-outline-dark" onclick="shareCurrentPage('${itemId}')"><i class="bi bi-share me-1"></i>Partilhar nas Redes</button>
+                        </div>
+                    </div>
+                `;
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Interação de Votação em Tempo Real (Percurso do Diogo - 2 cliques)
+        function castVote(option) {
+            const resultsBox = document.getElementById('poll-results');
+            if (resultsBox) resultsBox.classList.remove('d-none');
+            const liveFeedback = document.getElementById('live-vote-feedback');
+            if (liveFeedback) liveFeedback.classList.remove('d-none');
+
+            const pctA = option === 'A' ? '61%' : '54%';
+            const pctB = option === 'A' ? '39%' : '46%';
+            document.getElementById('vote-pct-a').innerText = pctA;
+            document.getElementById('vote-pct-b').innerText = pctB;
+            document.getElementById('vote-bar-a').style.width = pctA;
+            document.getElementById('vote-bar-b').style.width = pctB;
+
+            showToast('Voto registado em tempo real! O áudio da rádio continua sem interrupção.');
+        }
+
+        // Controlo do Mini-Player Fixo
+        function toggleAudioPlayer(forceState = null) {
+            isRadioPlaying = forceState !== null ? forceState : !isRadioPlaying;
+            const miniIcon = document.getElementById('mini-player-btn-icon');
+            const mainIcon = document.getElementById('main-player-icon');
+            const statusText = document.getElementById('mini-player-status');
+            const dot = document.getElementById('mini-player-dot');
+
+            if (isRadioPlaying) {
+                miniIcon.className = 'bi bi-pause-fill fs-4';
+                if (mainIcon) mainIcon.className = 'bi bi-pause-fill';
+                statusText.innerText = 'EM DIRETO · RFM';
+                dot.style.opacity = '1';
+            } else {
+                miniIcon.className = 'bi bi-play-fill fs-4';
+                if (mainIcon) mainIcon.className = 'bi bi-play-fill';
+                statusText.innerText = 'EMISSÃO EM PAUSA (CLICA PARA VOLTAR À RÁDIO)';
+                dot.style.opacity = '0.3';
+            }
+        }
+
+        function setCustomStream(streamName) {
+            isRadioPlaying = true;
+            toggleAudioPlayer(true);
+            document.getElementById('mini-player-status').innerText = 'RÁDIO ONLINE · ' + streamName;
+            document.getElementById('mini-player-track').innerText = 'A tocar seleção musical ' + streamName;
+            showToast('Sintonizado na rádio online: ' + streamName);
+        }
+
+        function submitMusicRequest() {
+            document.getElementById('music-request-alert').classList.remove('d-none');
+            showToast('Pedido de música enviado para o locutor em estúdio!');
+        }
+
+        function executeSearch(query) {
+            if (!query) return;
+            const modalEl = document.getElementById('searchModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+            showToast('A mostrar resultados para: "' + query + '"');
+            navigate('videos', 'bastidores');
+        }
+
+        function openExternal(platformName) {
+            showToast('A abrir no ecossistema externo: ' + platformName);
+        }
+
+        function shareCurrentPage(title) {
+            showToast('Link copiado para partilhar no TikTok, IG ou WhatsApp: ' + title);
+        }
+
+        function showToast(message) {
+            document.getElementById('rfmToastText').innerText = message;
+            const toastEl = document.getElementById('rfmToast');
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+
+        // Inicialização da Home
+        document.addEventListener('DOMContentLoaded', () => {
+            filterMoments('carro');
+        });
+    </script>
+</body>
+</html>
